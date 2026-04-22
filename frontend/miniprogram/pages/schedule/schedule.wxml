@@ -1,0 +1,72 @@
+<view class="container">
+    <!-- Loading -->
+    <view class="loading-state" wx:if="{{loading}}">
+        <text class="loading-text">AI 安排活动中...</text>
+        <text class="loading-hint">约需 30-60 秒</text>
+    </view>
+
+    <!-- Error -->
+    <view class="loading-state" wx:if="{{!loading && loadError}}">
+        <text class="loading-text">{{errorMsg}}</text>
+        <button class="btn-primary" style="margin-top: 40rpx; width: 320rpx;" bindtap="onRetry">重试</button>
+    </view>
+
+    <view wx:if="{{!loading && !loadError && plan}}">
+        <!-- Header -->
+        <view class="activity-header">
+            <view class="activity-type-tag">
+                <text>{{plan.activity_type}}</text>
+            </view>
+            <text class="activity-title">{{plan.title}}</text>
+            <text class="activity-desc">{{plan.description}}</text>
+        </view>
+
+        <!-- Info -->
+        <view class="card info-card">
+            <view class="info-row">
+                <text class="info-label">地点</text>
+                <text class="info-value">{{plan.location}}</text>
+            </view>
+            <view class="divider"></view>
+            <view class="info-row">
+                <text class="info-label">时间</text>
+                <text class="info-value">{{plan.suggested_time}}</text>
+            </view>
+            <view class="divider"></view>
+            <view class="info-row">
+                <text class="info-label">时长</text>
+                <text class="info-value">{{plan.duration}}</text>
+            </view>
+        </view>
+
+        <!-- Tips -->
+        <view class="card" wx:if="{{plan.tips && plan.tips.length}}">
+            <text class="section-title">小贴士</text>
+            <view class="tips-list">
+                <view class="tip-item" wx:for="{{plan.tips}}" wx:key="index">
+                    <text class="tip-dot">—</text>
+                    <text class="tip-text">{{item}}</text>
+                </view>
+            </view>
+        </view>
+
+        <!-- Poster -->
+        <view class="card" wx:if="{{posterCopy}}">
+            <text class="section-title">活动海报</text>
+            <view class="poster-preview">
+                <text class="poster-text">{{posterCopy}}</text>
+            </view>
+        </view>
+
+        <!-- Ice Breaker -->
+        <view class="card" wx:if="{{groupWelcome}}">
+            <text class="section-title">破冰话题</text>
+            <text class="welcome-text">{{groupWelcome}}</text>
+        </view>
+
+        <!-- CTA -->
+        <view class="cta-area safe-bottom">
+            <button class="btn-primary btn-large" bindtap="onConfirm">确认活动</button>
+        </view>
+    </view>
+</view>

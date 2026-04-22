@@ -1,0 +1,108 @@
+.container {
+    min-height: 100vh;
+    background: #FFFFFF;
+    padding-bottom: 48rpx;
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+}
+
+.loading-text { font-size: 28rpx; color: #999999; letter-spacing: 2rpx; }
+.loading-hint { font-size: 22rpx; color: #CCCCCC; margin-top: 16rpx; }
+
+/* Activity Header */
+.activity-header {
+    background: #000000;
+    color: #FFFFFF;
+    padding: 56rpx 40rpx;
+}
+
+.activity-type-tag {
+    display: inline-block;
+    border: 2rpx solid #FFFFFF;
+    color: #FFFFFF;
+    padding: 4rpx 24rpx;
+    font-size: 22rpx;
+    letter-spacing: 4rpx;
+    text-transform: uppercase;
+    margin-bottom: 20rpx;
+}
+
+.activity-title {
+    display: block;
+    font-size: 44rpx;
+    font-weight: 800;
+    letter-spacing: 2rpx;
+    margin-bottom: 16rpx;
+}
+
+.activity-desc {
+    display: block;
+    font-size: 26rpx;
+    opacity: 0.7;
+    line-height: 1.7;
+}
+
+/* Info Card */
+.info-card { padding: 32rpx 40rpx; }
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 24rpx;
+    padding: 12rpx 0;
+}
+
+.info-icon { font-size: 32rpx; }
+
+.info-content { display: flex; flex-direction: column; }
+.info-label { font-size: 22rpx; color: #999999; letter-spacing: 2rpx; }
+.info-value { font-size: 28rpx; color: #000000; font-weight: 600; }
+
+/* Section */
+.section-title {
+    font-size: 24rpx;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: 4rpx;
+    display: block;
+    margin-bottom: 20rpx;
+}
+
+/* Tips */
+.tips-list { display: flex; flex-direction: column; gap: 16rpx; }
+.tip-item { display: flex; gap: 16rpx; }
+.tip-dot { color: #000000; font-size: 28rpx; line-height: 1.6; font-weight: 700; }
+.tip-text { font-size: 26rpx; color: #333333; line-height: 1.6; flex: 1; }
+
+/* Poster */
+.poster-preview {
+    border: 2rpx solid #000000;
+    padding: 40rpx;
+    text-align: center;
+}
+
+.poster-text {
+    font-size: 30rpx;
+    font-weight: 700;
+    color: #000000;
+    line-height: 1.6;
+}
+
+/* Welcome */
+.welcome-text {
+    font-size: 26rpx;
+    color: #333333;
+    line-height: 1.8;
+    background: #F5F5F5;
+    padding: 24rpx;
+}
+
+/* CTA */
+.cta-area { padding: 32rpx; }
+.btn-large { width: 100%; height: 96rpx; line-height: 96rpx; letter-spacing: 4rpx; }

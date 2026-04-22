@@ -1,0 +1,43 @@
+<view class="container">
+    <!-- Header -->
+    <view class="group-header">
+        <text class="group-title">{{planTitle || '活动已创建'}}</text>
+        <text class="group-subtitle" wx:if="{{planLocation}}">{{planLocation}} · {{planTime}}</text>
+    </view>
+
+    <!-- Chat -->
+    <view class="chat-area">
+        <view wx:for="{{messages}}" wx:key="index" class="msg-wrapper {{item.isMe ? 'msg-right' : 'msg-left'}}">
+            <view wx:if="{{item.isSystem}}" class="msg-system">
+                <text class="msg-system-text">{{item.content}}</text>
+            </view>
+            <view wx:else class="msg-bubble-wrap">
+                <view class="msg-sender">
+                    <text>{{item.sender}}</text>
+                    <text class="msg-time">{{item.time}}</text>
+                </view>
+                <view class="msg-bubble {{item.isMe ? 'bubble-me' : 'bubble-other'}}">
+                    <text>{{item.content}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- Input -->
+    <view class="input-bar safe-bottom">
+        <input
+            class="chat-input"
+            value="{{inputValue}}"
+            placeholder="说点什么..."
+            confirm-type="send"
+            bindinput="onInputChange"
+            bindconfirm="onSend"
+        />
+        <button class="send-btn" catchtap="onSend">发送</button>
+    </view>
+
+    <!-- Home -->
+    <view class="home-cta">
+        <button class="btn-secondary" bindtap="onGoHome">返回首页</button>
+    </view>
+</view>

@@ -1,0 +1,17 @@
+{
+    "pages": [
+        "pages/index/index",
+        "pages/chat/chat",
+        "pages/match/match",
+        "pages/schedule/schedule",
+        "pages/group/group"
+    ],
+    "window": {
+        "navigationBarTitleText": "NIRA",
+        "navigationBarBackgroundColor": "#000000",
+        "navigationBarTextStyle": "white",
+        "backgroundColor": "#FFFFFF"
+    },
+    "sitemapLocation": "sitemap.json",
+    "style": "v2"
+}

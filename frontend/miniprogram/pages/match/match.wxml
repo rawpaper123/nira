@@ -1,0 +1,119 @@
+<view class="container">
+    <!-- Loading -->
+    <view class="loading-state" wx:if="{{loading}}">
+        <text class="loading-text">AI 匹配中...</text>
+        <text class="loading-hint">深度模拟中，约需 1-2 分钟</text>
+    </view>
+
+    <!-- 等待匹配（超时后） -->
+    <view class="loading-state" wx:if="{{matchStatus === 'waiting'}}">
+        <text class="loading-text">匹配进行中，请稍后查看</text>
+        <text class="loading-hint">周三 19:00 揭晓结果，届时会通知你</text>
+        <button class="btn-primary" style="margin-top: 40rpx; width: 320rpx;" bindtap="onGoHome">返回首页</button>
+    </view>
+
+    <!-- Error -->
+    <view class="loading-state" wx:if="{{loadError}}">
+        <text class="loading-text">{{errorMsg}}</text>
+        <button class="btn-primary" style="margin-top: 40rpx; width: 320rpx;" bindtap="onRetry">重试</button>
+    </view>
+
+    <!-- Match Result -->
+    <view wx:if="{{matchStatus === 'ready' && matchData}}">
+        <!-- Header -->
+        <view class="match-header">
+            <text class="week-label">第 {{weekNumber}} 周</text>
+            <text class="match-title">你的匹配</text>
+        </view>
+
+        <!-- Score -->
+        <view class="score-section">
+            <view class="score-ring">
+                <text class="score-number">{{score}}</text>
+                <text class="score-unit">匹配分</text>
+            </view>
+        </view>
+
+        <!-- Match Card -->
+        <view class="card match-card">
+            <view class="match-user">
+                <view class="match-avatar-fallback">
+                    <text>?</text>
+                </view>
+                <view class="match-info">
+                    <text class="match-name">{{matchData.user_b_nickname || '活动搭子'}}</text>
+                    <text class="match-score-text">匹配度 {{score}}%</text>
+                </view>
+            </view>
+        </view>
+
+        <!-- Why Matched -->
+        <view class="card">
+            <text class="section-title">为什么匹配你们</text>
+            <text class="reasoning-text">{{reasoning}}</text>
+            <view class="divider"></view>
+            <view class="score-bars">
+                <view class="score-bar-item">
+                    <text class="score-bar-label">兴趣</text>
+                    <view class="score-bar"><view class="score-bar-fill" style="width: {{compatDimensions.interest_overlap}}%"></view></view>
+                    <text class="score-bar-value">{{compatDimensions.interest_overlap}}%</text>
+                </view>
+                <view class="score-bar-item">
+                    <text class="score-bar-label">性格</text>
+                    <view class="score-bar"><view class="score-bar-fill" style="width: {{compatDimensions.personality_complement}}%"></view></view>
+                    <text class="score-bar-value">{{compatDimensions.personality_complement}}%</text>
+                </view>
+                <view class="score-bar-item">
+                    <text class="score-bar-label">时间</text>
+                    <view class="score-bar"><view class="score-bar-fill" style="width: {{compatDimensions.schedule_compatibility}}%"></view></view>
+                    <text class="score-bar-value">{{compatDimensions.schedule_compatibility}}%</text>
+                </view>
+                <view class="score-bar-item">
+                    <text class="score-bar-label">化学反应</text>
+                    <view class="score-bar"><view class="score-bar-fill" style="width: {{compatDimensions.chemistry_from_sim}}%"></view></view>
+                    <text class="score-bar-value">{{compatDimensions.chemistry_from_sim}}%</text>
+                </view>
+            </view>
+        </view>
+
+        <!-- Simulation -->
+        <view class="card" bindtap="toggleSimulation">
+            <view class="section-header">
+                <text class="section-title">AI 模拟对话</text>
+                <text class="toggle-icon">{{simulationExpanded ? '−' : '+'}}</text>
+            </view>
+            <text class="sim-hint">{{simulationExpanded ? '收起' : '展开'}} {{simulationScenes.length}} 个场景</text>
+
+            <view wx:if="{{simulationExpanded}}" class="sim-content">
+                <view class="sim-scene" wx:for="{{simulationScenes}}" wx:key="index">
+                    <view class="scene-header">
+                        <text class="scene-badge">场景 {{index + 1}}</text>
+                        <text class="scene-vibe">{{item.vibe_score * 100}}%</text>
+                    </view>
+                    <text class="scene-scenario">{{item.scenario}}</text>
+                    <view class="scene-chat">
+                        <text class="scene-dialog">{{item.conversation_snippet}}</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <!-- Accept / Reject -->
+        <view class="cta-area safe-bottom">
+            <button class="btn-primary btn-large" bindtap="onAccept">接受匹配</button>
+            <button class="btn-reject" bindtap="onReject">不感兴趣，重新匹配</button>
+        </view>
+    </view>
+
+    <!-- 已接受 -->
+    <view class="loading-state" wx:if="{{matchStatus === 'accepted'}}">
+        <text class="loading-text" style="color: #000000;">匹配已确认！</text>
+        <text class="loading-hint">正在为你安排活动...</text>
+    </view>
+
+    <!-- 已拒绝 -->
+    <view class="loading-state" wx:if="{{matchStatus === 'rejected'}}">
+        <text class="loading-text">已拒绝本次匹配</text>
+        <text class="loading-hint">你将加入下周重新匹配队列</text>
+    </view>
+</view>

@@ -1,0 +1,13 @@
+<view class="bubble-wrapper {{isUser ? 'right' : 'left'}}">
+    <view class="avatar">
+        <text>{{isUser ? '我' : 'AI'}}</text>
+    </view>
+    <view class="bubble">
+        <text wx:if="{{!isTyping}}">{{message}}</text>
+        <view wx:else class="typing-indicator">
+            <view class="dot"></view>
+            <view class="dot"></view>
+            <view class="dot"></view>
+        </view>
+    </view>
+</view>

@@ -1,0 +1,76 @@
+/* Nira — Minimalist Black & White */
+
+page {
+    background-color: #FFFFFF;
+    font-family: -apple-system, 'Segoe UI', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+    color: #000000;
+    font-size: 28rpx;
+    line-height: 1.6;
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+    background: #000000;
+    color: #FFFFFF;
+    border-radius: 0;
+    padding: 28rpx 64rpx;
+    font-size: 28rpx;
+    font-weight: 600;
+    letter-spacing: 2rpx;
+    text-align: center;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary::after { border: none; }
+
+.btn-secondary {
+    background: #FFFFFF;
+    color: #000000;
+    border: 2rpx solid #000000;
+    border-radius: 0;
+    padding: 26rpx 64rpx;
+    font-size: 28rpx;
+    font-weight: 600;
+    letter-spacing: 2rpx;
+    text-align: center;
+}
+
+.btn-secondary::after { border: none; }
+
+/* ---------- Card ---------- */
+.card {
+    background: #FFFFFF;
+    border: 2rpx solid #000000;
+    border-radius: 12rpx;
+    padding: 40rpx;
+    margin: 24rpx 32rpx;
+}
+
+/* ---------- Tag ---------- */
+.tag {
+    display: inline-block;
+    border: 2rpx solid #000000;
+    color: #000000;
+    border-radius: 0;
+    padding: 6rpx 20rpx;
+    font-size: 22rpx;
+    font-weight: 500;
+    letter-spacing: 1rpx;
+    margin: 4rpx;
+}
+
+/* ---------- Divider ---------- */
+.divider {
+    height: 2rpx;
+    background: #000000;
+    margin: 32rpx 0;
+    opacity: 0.1;
+}
+
+/* ---------- Safe Area ---------- */
+.safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+}

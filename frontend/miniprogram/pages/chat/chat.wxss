@@ -1,0 +1,124 @@
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: #FFFFFF;
+}
+
+.chat-list {
+    flex: 1;
+    padding: 24rpx 0 24rpx;
+}
+
+/* Input Bar */
+.input-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+    padding: 16rpx 24rpx;
+    background: #FFFFFF;
+    border-top: 2rpx solid #000000;
+    z-index: 20;
+}
+
+.chat-input {
+    flex: 1;
+    height: 72rpx;
+    background: #F5F5F5;
+    border: none;
+    padding: 0 28rpx;
+    font-size: 28rpx;
+    color: #000000;
+}
+
+.input-placeholder { color: #CCCCCC; }
+
+.send-btn {
+    background: #000000;
+    color: #FFFFFF;
+    height: 72rpx;
+    line-height: 72rpx;
+    padding: 0 32rpx;
+    font-size: 24rpx;
+    font-weight: 600;
+    letter-spacing: 2rpx;
+    border: none;
+    min-width: 100rpx;
+}
+
+.send-btn::after { border: none; }
+
+.send-btn[disabled] {
+    background: #E0E0E0;
+    color: #FFFFFF;
+}
+
+/* Match CTA */
+.match-cta {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20rpx 32rpx;
+    background: #FFFFFF;
+    border-top: 2rpx solid #000000;
+    z-index: 30;
+}
+
+.btn-match {
+    width: 100%;
+    height: 88rpx;
+    line-height: 88rpx;
+    font-size: 26rpx;
+    letter-spacing: 4rpx;
+}
+
+.retry-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16rpx 0;
+}
+
+.match-error { font-size: 24rpx; color: #999999; }
+
+.match-retry {
+    font-size: 26rpx;
+    color: #000000;
+    margin-top: 8rpx;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+/* Queue Done Card */
+.queue-done-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32rpx 24rpx;
+    border: 2rpx solid #000000;
+    border-radius: 12rpx;
+}
+
+.queue-done-icon {
+    font-size: 40rpx;
+    color: #000000;
+    margin-bottom: 12rpx;
+}
+
+.queue-done-text {
+    font-size: 28rpx;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: 2rpx;
+}
+
+.queue-done-hint {
+    font-size: 22rpx;
+    color: #999999;
+    margin-top: 8rpx;
+}

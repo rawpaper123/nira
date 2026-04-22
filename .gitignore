@@ -25,6 +25,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
 
 # vercel
 .vercel
@@ -33,11 +34,18 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# other projects in this directory
-/backend
-/frontend
-/docs
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# database
+*.db
+
+# claude
 /skills-lock.json
 /.agents
 /.claude
-/CLAUDE.md

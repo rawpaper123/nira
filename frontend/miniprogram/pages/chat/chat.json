@@ -1,0 +1,6 @@
+{
+    "navigationBarTitleText": "聊聊你自己",
+    "usingComponents": {
+        "chat-bubble": "/components/chat-bubble/index"
+    }
+}

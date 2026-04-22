@@ -1,0 +1,122 @@
+<view class="container">
+    <!-- Hero — 对齐 nira.social 风格 -->
+    <view class="hero">
+        <text class="hero-brand">NIRA</text>
+        <view class="hero-slogan">
+            <text class="hero-slogan-line">每周三</text>
+            <text class="hero-slogan-line">遇见你的活动搭子</text>
+        </view>
+        <text class="hero-desc">AI 帮你找到最合拍的人，安排最棒的活动</text>
+    </view>
+
+    <!-- Countdown -->
+    <view class="countdown-section">
+        <text class="countdown-label">下次匹配日</text>
+        <view class="countdown-row">
+            <view class="countdown-item">
+                <text class="countdown-num">{{countdown.days}}</text>
+                <text class="countdown-unit">天</text>
+            </view>
+            <text class="countdown-sep">:</text>
+            <view class="countdown-item">
+                <text class="countdown-num">{{countdown.hours}}</text>
+                <text class="countdown-unit">时</text>
+            </view>
+            <text class="countdown-sep">:</text>
+            <view class="countdown-item">
+                <text class="countdown-num">{{countdown.minutes}}</text>
+                <text class="countdown-unit">分</text>
+            </view>
+            <text class="countdown-sep">:</text>
+            <view class="countdown-item">
+                <text class="countdown-num">{{countdown.seconds}}</text>
+                <text class="countdown-unit">秒</text>
+            </view>
+        </view>
+        <text class="countdown-joined">已有 21,812 人加入</text>
+    </view>
+
+    <!-- How it works — 对齐网站 4 步流程 -->
+    <view class="how-section">
+        <text class="section-heading">如何运作</text>
+        <view class="step-list">
+            <view class="step-item">
+                <view class="step-num-wrap">
+                    <text class="step-num">01</text>
+                </view>
+                <view class="step-content">
+                    <text class="step-title">告诉 Nira 你的偏好</text>
+                    <text class="step-desc">周二晚 11:59 前提交你的兴趣爱好</text>
+                </view>
+            </view>
+            <view class="step-item">
+                <view class="step-num-wrap">
+                    <text class="step-num">02</text>
+                </view>
+                <view class="step-content">
+                    <text class="step-title">周三揭晓匹配</text>
+                    <text class="step-desc">AI 为你精准匹配一个活动搭子</text>
+                </view>
+            </view>
+            <view class="step-item">
+                <view class="step-num-wrap">
+                    <text class="step-num">03</text>
+                </view>
+                <view class="step-content">
+                    <text class="step-title">确认活动安排</text>
+                    <text class="step-desc">AI 自动安排时间、地点和活动内容</text>
+                </view>
+            </view>
+            <view class="step-item">
+                <view class="step-num-wrap">
+                    <text class="step-num">04</text>
+                </view>
+                <view class="step-content">
+                    <text class="step-title">出发玩吧！</text>
+                    <text class="step-desc">和你的活动搭子度过一段好时光</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- AI 特色 — 对齐网站 Matchmaker 区域 -->
+    <view class="ai-section">
+        <text class="section-heading">你的专属 AI 匹配师</text>
+        <view class="card ai-card">
+            <text class="ai-card-title">顶尖 AI 技术驱动</text>
+            <text class="ai-card-desc">专业匹配师与认知科学家联手打造的最优匹配算法</text>
+        </view>
+        <view class="card ai-card">
+            <text class="ai-card-title">越用越懂你</text>
+            <text class="ai-card-desc">系统持续学习你的偏好，每次匹配质量都在提升</text>
+        </view>
+        <view class="card ai-card">
+            <text class="ai-card-title">全局最优匹配</text>
+            <text class="ai-card-desc">在整个社区中扫描找到你的最佳拍档</text>
+        </view>
+    </view>
+
+    <!-- CTA -->
+    <view class="cta-area" wx:if="{{!profileComplete}}">
+        <button class="btn-primary btn-large" bindtap="onStartTap">开始匹配</button>
+        <text class="cta-hint">2 分钟，AI 帮你搞定一切</text>
+    </view>
+
+    <view class="cta-area" wx:if="{{profileComplete && hasMatch}}">
+        <button class="btn-primary btn-large" bindtap="onViewMatch">查看匹配</button>
+        <text class="cta-hint">你的活动搭子已就位</text>
+    </view>
+
+    <view class="cta-area" wx:if="{{profileComplete && joinedQueue && !hasMatch}}">
+        <view class="queue-status-card">
+            <text class="queue-status-icon">✓</text>
+            <text class="queue-status-text">已加入本周匹配队列</text>
+            <text class="queue-status-hint">下周三 19:00 揭晓匹配结果</text>
+        </view>
+    </view>
+
+    <view class="cta-area" wx:if="{{profileComplete && !joinedQueue && !hasMatch}}">
+        <button class="btn-primary btn-large" bindtap="onFindMatch">寻找搭子</button>
+        <text class="cta-hint">和 AI 聊聊，找到你的活动搭子</text>
+    </view>
+</view>
