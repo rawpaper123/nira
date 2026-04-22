@@ -20,7 +20,7 @@ export default function JoinModal({
     e.preventDefault();
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setErrorMessage("Please enter a valid email address.");
+      setErrorMessage("请输入有效的邮箱地址。");
       setStatus("error");
       return;
     }
@@ -38,7 +38,7 @@ export default function JoinModal({
       const data = await res.json();
 
       if (!res.ok) {
-        setErrorMessage(data.error || "Something went wrong.");
+        setErrorMessage(data.error || "出了点问题，请重试。");
         setStatus("error");
         return;
       }
@@ -46,7 +46,7 @@ export default function JoinModal({
       setStatus("success");
       setEmail("");
     } catch {
-      setErrorMessage("Network error. Please try again.");
+      setErrorMessage("网络错误，请重试。");
       setStatus("error");
     }
   };
@@ -59,7 +59,7 @@ export default function JoinModal({
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-neutral-400 transition-colors hover:text-black"
-          aria-label="Close"
+          aria-label="关闭"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M18 6L6 18M6 6l12 12" />
@@ -73,16 +73,16 @@ export default function JoinModal({
                 <path d="M20 6L9 17l-5-5" />
               </svg>
             </div>
-            <h3 className="font-logo text-xl font-black uppercase">You&apos;re In!</h3>
+            <h3 className="font-logo text-xl font-black uppercase">注册成功！</h3>
             <p className="mt-2 text-sm text-neutral-600">
-              Check your inbox for next steps.
+              查看邮箱获取下一步指引。
             </p>
           </div>
         ) : (
           <>
-            <h3 className="mb-2 font-logo text-2xl font-black uppercase">Sign Up</h3>
+            <h3 className="mb-2 font-logo text-2xl font-black uppercase">注册</h3>
             <p className="mb-6 text-sm text-neutral-600">
-              Enter your school email to sign up.
+              输入你的学校邮箱来注册。
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -94,7 +94,7 @@ export default function JoinModal({
                   setStatus("idle");
                   setErrorMessage("");
                 }}
-                placeholder="your@email.edu"
+                placeholder="your@edu.cn"
                 className="w-full rounded-xl border-2 border-black/10 px-4 py-3 text-sm outline-none transition-colors placeholder:text-neutral-400 focus:border-black"
               />
 
@@ -107,13 +107,13 @@ export default function JoinModal({
                 disabled={status === "loading"}
                 className="w-full rounded-full bg-black py-3 text-sm font-semibold text-white transition-all hover:scale-[1.02] hover:bg-neutral-800 disabled:opacity-50"
               >
-                {status === "loading" ? "Signing up..." : "Next"}
+                {status === "loading" ? "注册中..." : "下一步"}
               </button>
             </form>
 
             <div className="mt-6 flex items-center gap-3">
               <div className="h-px flex-1 bg-black/10" />
-              <span className="text-xs text-neutral-400">or</span>
+              <span className="text-xs text-neutral-400">或</span>
               <div className="h-px flex-1 bg-black/10" />
             </div>
 

@@ -9,7 +9,7 @@ export default function Footer() {
                 key={i}
                 className="mx-4 font-logo text-3xl font-black uppercase opacity-20 sm:text-5xl md:text-7xl"
               >
-                Date Without Swiping &bull;
+                不用滑卡也能约会 &bull;
               </span>
             ))}
           </div>
@@ -17,7 +17,7 @@ export default function Footer() {
 
         <div className="mb-12 text-center">
           <h3 className="mb-6 font-logo text-2xl font-black uppercase sm:text-3xl">
-            Our Manifesto
+            我们的宣言
           </h3>
           <div className="mx-auto max-w-sm overflow-hidden rounded-3xl border border-white/10 bg-neutral-900 p-4">
             <div className="flex items-center gap-2 mb-4">
@@ -28,12 +28,12 @@ export default function Footer() {
             </div>
             <div className="ml-4 rounded-2xl rounded-tl-none bg-white p-3">
               <p className="text-sm text-black leading-relaxed">
-                Hey! I found you a perfect match for this Wednesday. Here&apos;s your date plan — coffee at the campus cafe at 3pm. Have fun! ☕
+                嘿！这周三帮你找到了一位超搭的对象。约会方案——校园咖啡馆下午 3 点，祝愉快！☕
               </p>
             </div>
             <div className="mr-4 ml-auto mt-3 max-w-[75%] rounded-2xl rounded-tr-none bg-white p-3">
               <p className="text-sm text-black leading-relaxed">
-                A friend that texts you ready-to-go dates
+                一个用微信帮你安排约会的 AI 朋友
               </p>
             </div>
           </div>
@@ -59,17 +59,17 @@ export default function Footer() {
           </div>
 
           <div className="flex gap-6 text-sm text-white/40">
-            <a href="#" className="transition-colors hover:text-white/70">Careers</a>
-            <a href="#" className="transition-colors hover:text-white/70">Manifesto</a>
+            <a href="#" className="transition-colors hover:text-white/70">加入我们</a>
+            <a href="#" className="transition-colors hover:text-white/70">宣言</a>
           </div>
         </div>
 
         <div className="border-t border-white/10 pt-8 text-center text-xs text-white/30">
           <p>&copy; Nira 2025</p>
           <div className="mt-3 flex justify-center gap-6">
-            <a href="#" className="transition-colors hover:text-white/60">Terms</a>
-            <a href="#" className="transition-colors hover:text-white/60">Privacy</a>
-            <a href="#" className="transition-colors hover:text-white/60">Cookies</a>
+            <a href="#" className="transition-colors hover:text-white/60">服务条款</a>
+            <a href="#" className="transition-colors hover:text-white/60">隐私政策</a>
+            <a href="#" className="transition-colors hover:text-white/60">Cookie</a>
           </div>
         </div>
       </div>

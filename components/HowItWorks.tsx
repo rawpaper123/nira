@@ -3,32 +3,32 @@ import Image from "next/image";
 const steps = [
   {
     number: 1,
-    title: "Tell Nira Your Type",
-    description: "Submit your preferences by Tuesday 11:59 PM.",
+    title: "告诉 Nira 你的喜好",
+    description: "在周二晚 11:59 前提交你的偏好。",
     image: "/images/howitworks/how_it_works_1.webp",
     numImage: "/images/howitworks/number_1.webp",
   },
   {
     number: 2,
-    title: "The Wednesday Drop",
+    title: "周三惊喜推送",
     description:
-      "Check your iMessage at 7pm. We will send you one personalized match and curate your date for you!",
+      "周三晚 7 点查看微信消息，我们会推送一位精选匹配对象，并为你安排好约会！",
     image: "/images/howitworks/how_it_works_2.webp",
     numImage: "/images/howitworks/number_2.webp",
   },
   {
     number: 3,
-    title: "Schedule the Date",
+    title: "约个时间",
     description:
-      "Find a time that works for both of you to meet up.",
+      "和对方确认一个双方都方便的见面时间。",
     image: "/images/howitworks/how_it_works_3.webp",
     numImage: "/images/howitworks/number_3.webp",
   },
   {
     number: 4,
-    title: "Have fun!",
+    title: "享受约会吧！",
     description:
-      "Enjoy a good time with your personalized date!",
+      "和你的专属匹配对象度过一段愉快时光！",
     image: "/images/howitworks/how_it_works_4.webp",
     numImage: "/images/howitworks/number_4.webp",
   },
@@ -39,7 +39,7 @@ export default function HowItWorks() {
     <section className="bg-white px-6 py-24">
       <div className="mx-auto max-w-6xl">
         <h2 className="mb-16 text-center font-logo text-3xl font-black uppercase tracking-tight sm:text-4xl md:text-5xl">
-          How it works
+          使用流程
         </h2>
 
         <div className="grid gap-12 md:grid-cols-2 md:gap-8 lg:gap-16">
@@ -50,7 +50,7 @@ export default function HowItWorks() {
             >
               <Image
                 src={step.numImage}
-                alt={`Step ${step.number}`}
+                alt={`第 ${step.number} 步`}
                 width={64}
                 height={64}
                 className="h-16 w-16"

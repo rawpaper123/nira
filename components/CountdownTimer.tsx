@@ -21,10 +21,10 @@ export default function CountdownTimer() {
     <div className="flex items-center gap-3">
       <div className="flex gap-2">
         {[
-          { value: padZero(timeLeft.days), label: "D" },
-          { value: padZero(timeLeft.hours), label: "H" },
-          { value: padZero(timeLeft.minutes), label: "M" },
-          { value: padZero(timeLeft.seconds), label: "S" },
+          { value: padZero(timeLeft.days), label: "天" },
+          { value: padZero(timeLeft.hours), label: "时" },
+          { value: padZero(timeLeft.minutes), label: "分" },
+          { value: padZero(timeLeft.seconds), label: "秒" },
         ].map((unit, i) => (
           <div key={unit.label} className="flex items-center gap-2">
             <div className="flex flex-col items-center">

@@ -57,13 +57,13 @@ export default function MobileMenu({
             href="#"
             className="text-base font-medium text-black transition-opacity hover:opacity-70"
           >
-            Log In
+            登录
           </a>
           <button
             onClick={onJoinClick}
             className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition-all hover:scale-105 hover:bg-neutral-800"
           >
-            Join Now
+            立即加入
           </button>
         </div>
       </div>

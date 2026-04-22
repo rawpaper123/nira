@@ -4,44 +4,44 @@ import { useState } from "react";
 
 const faqs = [
   {
-    question: "How does Nira pair people?",
+    question: "Nira 是怎么匹配的？",
     answer:
-      "Nira pairs you with another student by analyzing your profiles and comparing your preferences. This process employs rigorous computation and simulation to provide the best insights for curating a successful date. Leveraging the reasoning abilities of frontier LLMs, we can catch the slightest signs of the possibilities of a good date. We also have an agentic system that orchestrates different expert agents including analysis experts, matchmaking experts, personalized poster experts, scheduler experts, etc.",
+      "Nira 通过分析你的个人资料和偏好，与另一位同学进行匹配。我们运用前沿大模型的推理能力，捕捉每一次美好约会的可能性。同时，我们的智能体系统会调度分析专家、匹配专家、约会策划专家等多个角色协同工作。",
   },
   {
-    question: "How Nira works",
+    question: "Nira 怎么用？",
     answer:
-      "Nira curates dates for you without requiring you to swipe or chat with anyone. After submitting your information, Nira will text you a date plan that includes the time, place, and details of your match. The date will take place around the campus you're currently near.",
+      "Nira 为你安排约会，不需要你滑卡或聊天。提交信息后，Nira 会通过微信推送约会方案，包含时间、地点和匹配对象信息。约会会在你附近的校园进行。",
   },
   {
-    question: "What will I know about my match before the date?",
+    question: "约会前能知道对方什么信息？",
     answer:
-      "Once we find a good match for you, you'll get a poster with their photos and a short explanation of why you'd be a great pair. You'll also get a scheduler to share your availability for the week. After both of you fill it out, we'll arrange the date time, place, and give you a few dating tips to help it go smoothly.",
+      "匹配成功后，你会收到一张对方的海报，包含照片和匹配理由说明。你还会收到一份时间表，双方填好后，我们会安排具体的时间、地点，并附上约会小贴士。",
   },
   {
-    question: "What if I don't like my match/date?",
+    question: "不喜欢匹配对象怎么办？",
     answer:
-      "You can always simply tell Nira the reason why you don't like it and any other feedback. Nira will then proceed to arrange another date that follows the feedback. You can also adjust your profile to update your preferences and personal information.",
+      "随时告诉 Nira 你的反馈和原因，Nira 会根据你的反馈重新安排下一次约会。你也可以更新个人资料和偏好设置。",
   },
   {
-    question: "Who's participating?",
+    question: "谁可以参加？",
     answer:
-      "Currently, only college students who are 18 or older are participating in this experience.",
+      "目前仅限 18 岁及以上的在校大学生参与。",
   },
   {
-    question: "What if I can't make it last minute?",
+    question: "临时有事去不了怎么办？",
     answer:
-      "If you really can't make it last minute, please cancel by texting your match asap to prevent being banned from future experiences.",
+      "如果真的临时有事，请尽快微信通知你的约会对象，避免被限制参与后续活动。",
   },
   {
-    question: "How long does it usually take?",
+    question: "通常多久能约上？",
     answer:
-      "Since we are only releasing this experience to a very select group of students, we estimate that it will take approximately one to two weeks to secure a guaranteed in-person coffee date. For a recent upgrade in system, 70% of the users now get their first date within 2 days of signing up.",
+      "由于我们目前仅面向小范围学生开放，通常 1-2 周内可以确保一次线下见面。近期系统升级后，70% 的用户在注册后 2 天内就能完成首次约会。",
   },
   {
-    question: "Where do the dates happen?",
+    question: "约会在哪里进行？",
     answer:
-      "Dates take place at carefully selected on-campus spots to ensure a safe and enjoyable experience.",
+      "约会在精心挑选的校园地点进行，确保安全和愉快的体验。",
   },
 ];
 
@@ -52,7 +52,7 @@ export default function FAQSection() {
     <section className="bg-white px-6 py-24">
       <div className="mx-auto max-w-3xl">
         <h2 className="mb-16 text-center font-logo text-3xl font-black uppercase tracking-tight sm:text-4xl md:text-5xl">
-          FAQ
+          常见问题
         </h2>
 
         <div className="divide-y divide-black/10">

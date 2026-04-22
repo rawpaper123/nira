@@ -9,7 +9,7 @@ export default function HeroSection({ onJoinClick }: { onJoinClick: () => void }
       <div className="flex flex-col items-center gap-8 text-center">
         <Image
           src="/images/wednesday/wednesday-vector-sun.png"
-          alt="Sun"
+          alt="太阳"
           width={80}
           height={80}
           className="h-16 w-16 sm:h-20 sm:w-20"
@@ -17,16 +17,16 @@ export default function HeroSection({ onJoinClick }: { onJoinClick: () => void }
         />
 
         <h1 className="font-logo text-4xl font-black uppercase leading-tight tracking-tight sm:text-5xl md:text-7xl lg:text-8xl">
-          get a date every
+          每周三
           <br />
-          wednesday
+          来一场约会
         </h1>
 
         <div className="flex items-center gap-4">
           <span className="font-logo text-4xl font-black sm:text-5xl md:text-6xl">@</span>
           <Image
             src="/images/wednesday/wednesday-date.jpg"
-            alt="Date"
+            alt="约会"
             width={200}
             height={200}
             className="h-28 w-28 rounded-full object-cover sm:h-36 sm:w-36"
@@ -38,7 +38,7 @@ export default function HeroSection({ onJoinClick }: { onJoinClick: () => void }
 
         <Image
           src="/images/wednesday/wednesday-vector-heart.png"
-          alt="Heart"
+          alt="爱心"
           width={40}
           height={40}
           className="h-8 w-8 sm:h-10 sm:w-10"
@@ -46,11 +46,11 @@ export default function HeroSection({ onJoinClick }: { onJoinClick: () => void }
         />
 
         <p className="text-sm font-medium tracking-wide text-neutral-600 sm:text-base">
-          Next Match Day: Apr 22, 2026
+          下次匹配日：2026年4月22日
         </p>
 
         <p className="text-sm font-semibold tracking-wide text-black">
-          Already Joined: <span className="font-logo text-base">21,812</span>
+          已加入：<span className="font-logo text-base">21,812</span>
         </p>
 
         <button
@@ -59,12 +59,12 @@ export default function HeroSection({ onJoinClick }: { onJoinClick: () => void }
         >
           <Image
             src="/images/logos/imessage-logo.png"
-            alt="iMessage"
+            alt="微信"
             width={20}
             height={20}
             className="h-5 w-5"
           />
-          Message Nira to Join
+          发微信给 Nira 加入
         </button>
       </div>
     </section>

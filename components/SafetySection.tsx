@@ -3,17 +3,17 @@ import Image from "next/image";
 const safetyItems = [
   {
     number: 1,
-    title: "Verified students\nat your school only",
+    title: "仅限本校认证学生",
     image: "/images/verified/safety_1.webp",
   },
   {
     number: 2,
-    title: "Only your date\nsees you",
+    title: "只有你的约会对象\n能看到你",
     image: "/images/verified/safety_2.webp",
   },
   {
     number: 3,
-    title: "Coffee dates on\ncampus",
+    title: "校园内咖啡见面",
     image: "/images/verified/safety_3.webp",
   },
 ];
@@ -23,7 +23,7 @@ export default function SafetySection() {
     <section className="bg-black px-6 py-24">
       <div className="mx-auto max-w-6xl">
         <h2 className="mb-16 text-center font-logo text-3xl font-black uppercase tracking-tight text-white sm:text-4xl md:text-5xl">
-          Verified. Private. Safe.
+          认证 · 隐私 · 安全
         </h2>
 
         <div className="grid gap-6 sm:grid-cols-3">
@@ -35,7 +35,7 @@ export default function SafetySection() {
               <div className="overflow-hidden rounded-xl">
                 <Image
                   src={item.image}
-                  alt={`Safe #${item.number}`}
+                  alt={`安全 #${item.number}`}
                   width={400}
                   height={300}
                   className="h-auto w-full"
@@ -43,7 +43,7 @@ export default function SafetySection() {
               </div>
               <div>
                 <span className="mb-1 block text-xs font-bold uppercase tracking-widest text-white/40">
-                  Safe #{item.number}
+                  安全 #{item.number}
                 </span>
                 <p className="text-sm font-semibold text-white whitespace-pre-line">
                   {item.title}

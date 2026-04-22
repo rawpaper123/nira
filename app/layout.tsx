@@ -3,13 +3,13 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://nira.social"),
-  title: "Nira | get a date every wednesday",
-  description: "Nira sets you up on dates every wednesday.",
-  keywords: ["dating", "dates", "wednesday", "matchmaking", "Nira"],
+  title: "Nira | 每周三帮你安排约会",
+  description: "Nira 每周三为你精准匹配线下约会。",
+  keywords: ["约会", "匹配", "周三", "大学生", "Nira", "线下见面", "AI红娘"],
   authors: [{ name: "Nira" }],
   openGraph: {
-    title: "Nira | get a date every wednesday",
-    description: "I'm Nira, a friend that texts you ready-to-go dates!",
+    title: "Nira | 每周三帮你安排约会",
+    description: "我是 Nira，一个用微信帮你安排约会的 AI 朋友！",
     url: "https://nira.social",
     siteName: "Nira",
     images: [
@@ -17,16 +17,16 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1280,
         height: 1024,
-        alt: "Nira - get a date every wednesday",
+        alt: "Nira - 每周三帮你安排约会",
       },
     ],
-    locale: "en_US",
+    locale: "zh_CN",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nira | get a date every wednesday",
-    description: "I'm Nira, a friend that texts you ready-to-go dates!",
+    title: "Nira | 每周三帮你安排约会",
+    description: "我是 Nira，一个用微信帮你安排约会的 AI 朋友！",
     images: ["/og-image.png"],
   },
   robots: {
@@ -47,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="zh-CN">
       <body className="bg-white text-black">{children}</body>
     </html>
   );

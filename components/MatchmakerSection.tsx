@@ -2,21 +2,21 @@ import Image from "next/image";
 
 const features = [
   {
-    title: "Backed by best AI research",
+    title: "前沿 AI 研究驱动",
     description:
-      "Professional matchmakers and cognitive researchers working together to create the perfect matching algorithm.",
+      "专业红娘与认知科学家联手打造最精准的匹配算法。",
     image: "/images/your-personalized/matchmaker_1.webp",
   },
   {
-    title: "Nira learns your preferences",
+    title: "Nira 越来越懂你",
     description:
-      "Our system adapts to what you like, continuously improving your match quality with every interaction.",
+      "系统会学习你的偏好，每次互动都让匹配更精准。",
     image: "/images/your-personalized/matchmaker_2.webp",
   },
   {
-    title: "Scans the entire pool to find the one",
+    title: "全网扫描找到那个 TA",
     description:
-      "Comprehensive matching across the entire community to find your best possible match.",
+      "在全平台用户中精准匹配，找到最适合你的那个人。",
     image: "/images/your-personalized/matchmaker_3.webp",
   },
 ];
@@ -26,7 +26,7 @@ export default function MatchmakerSection() {
     <section className="bg-white px-6 py-24">
       <div className="mx-auto max-w-6xl">
         <h2 className="mb-16 text-center font-logo text-3xl font-black uppercase tracking-tight sm:text-4xl md:text-5xl">
-          Your Personalized Matchmaker
+          你的专属 AI 红娘
         </h2>
 
         <div className="space-y-20">

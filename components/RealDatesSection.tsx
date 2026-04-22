@@ -1,15 +1,15 @@
 import Image from "next/image";
 
 const photos = [
-  { src: "/images/real-dates/real_dates_pic_01.webp", alt: "Real date photo 1" },
-  { src: "/images/real-dates/real_dates_pic_02.webp", alt: "Real date photo 2" },
-  { src: "/images/real-dates/real_dates_pic_03.webp", alt: "Real date photo 3" },
+  { src: "/images/real-dates/real_dates_pic_01.webp", alt: "真实约会照片 1" },
+  { src: "/images/real-dates/real_dates_pic_02.webp", alt: "真实约会照片 2" },
+  { src: "/images/real-dates/real_dates_pic_03.webp", alt: "真实约会照片 3" },
 ];
 
 const stats = [
-  { image: "/images/real-dates/real_dates_data_01.webp", alt: "12,000+ dates" },
-  { image: "/images/real-dates/real_dates_data_02.webp", alt: "65% second date rate" },
-  { image: "/images/real-dates/real_dates_data_03.webp", alt: "92% satisfaction" },
+  { image: "/images/real-dates/real_dates_data_01.webp", alt: "12,000+ 次约会" },
+  { image: "/images/real-dates/real_dates_data_02.webp", alt: "65% 二次约会率" },
+  { image: "/images/real-dates/real_dates_data_03.webp", alt: "92% 满意度" },
 ];
 
 export default function RealDatesSection() {
@@ -17,7 +17,7 @@ export default function RealDatesSection() {
     <section className="bg-black px-6 py-24">
       <div className="mx-auto max-w-6xl">
         <h2 className="mb-16 text-center font-logo text-3xl font-black uppercase tracking-tight text-white sm:text-4xl md:text-5xl">
-          Real Dates Delivered
+          真实的约会，已送达
         </h2>
 
         <div className="grid gap-4 sm:grid-cols-3 mb-8">
