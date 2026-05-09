@@ -1,19 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getNextMatchDay, calculateTimeLeft, padZero } from "@/lib/countdown";
+import { getNextWednesday19, calculateTimeLeft, padZero } from "@/lib/countdown";
 
 export default function CountdownTimer() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
-    const target = getNextMatchDay();
-    setTimeLeft(calculateTimeLeft(target));
-
-    const interval = setInterval(() => {
-      setTimeLeft(calculateTimeLeft(target));
-    }, 1000);
-
+    const tick = () => setTimeLeft(calculateTimeLeft(getNextWednesday19()));
+    tick();
+    const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
   }, []);
 

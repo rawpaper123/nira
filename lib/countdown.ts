@@ -1,7 +1,21 @@
-export function getNextMatchDay(): Date {
+export function getNextWednesday19(): Date {
   const now = new Date();
-  const matchDay = new Date("2026-04-22T19:00:00-04:00");
-  return matchDay;
+  const day = now.getUTCDay(); // 0=Sun, 3=Wed
+  let daysUntilWed = (3 - day + 7) % 7;
+
+  const target = new Date(now);
+  target.setUTCDate(now.getUTCDate() + daysUntilWed);
+  target.setUTCHours(11, 0, 0, 0); // 北京19:00 = UTC 11:00
+
+  if (target.getTime() <= now.getTime()) {
+    target.setUTCDate(target.getUTCDate() + 7);
+  }
+
+  return target;
+}
+
+export function formatMatchDate(date: Date): string {
+  return `${date.getFullYear()}年${date.getUTCMonth() + 1}月${date.getUTCDate()}日`;
 }
 
 export interface TimeLeft {

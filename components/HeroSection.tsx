@@ -2,8 +2,11 @@
 
 import CountdownTimer from "./CountdownTimer";
 import Image from "next/image";
+import { getNextWednesday19, formatMatchDate } from "@/lib/countdown";
 
 export default function HeroSection({ onJoinClick }: { onJoinClick: () => void }) {
+  const matchDateStr = formatMatchDate(getNextWednesday19());
+
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-white px-6 pt-20">
       <div className="flex flex-col items-center gap-8 text-center">
@@ -46,7 +49,7 @@ export default function HeroSection({ onJoinClick }: { onJoinClick: () => void }
         />
 
         <p className="text-sm font-medium tracking-wide text-neutral-600 sm:text-base">
-          下次匹配日：2026年4月22日
+          下次匹配日：{matchDateStr}
         </p>
 
         <p className="text-sm font-semibold tracking-wide text-black">
