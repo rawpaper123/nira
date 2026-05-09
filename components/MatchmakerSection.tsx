@@ -4,7 +4,7 @@ const features = [
   {
     title: "前沿 AI 研究驱动",
     description:
-      "专业红娘与认知科学家联手打造最精准的匹配算法。",
+      "关系科学与产品策略共同驱动，让每一次推荐更接近真实合拍。",
     image: "/images/your-personalized/matchmaker_1.webp",
   },
   {
@@ -14,9 +14,9 @@ const features = [
     image: "/images/your-personalized/matchmaker_2.webp",
   },
   {
-    title: "全网扫描找到那个 TA",
+    title: "找到更合拍的连接",
     description:
-      "在全平台用户中精准匹配，找到最适合你的那个人。",
+      "基于兴趣、节奏、个性和场景，帮你遇见真正聊得来的人。",
     image: "/images/your-personalized/matchmaker_3.webp",
   },
 ];
@@ -26,7 +26,7 @@ export default function MatchmakerSection() {
     <section className="bg-white px-6 py-24">
       <div className="mx-auto max-w-6xl">
         <h2 className="mb-16 text-center font-logo text-3xl font-black uppercase tracking-tight sm:text-4xl md:text-5xl">
-          你的专属 AI 红娘
+          你的 AI 匹配助手
         </h2>
 
         <div className="space-y-20">

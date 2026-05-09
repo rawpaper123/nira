@@ -2,8 +2,8 @@ import Image from "next/image";
 
 const photos = [
   { src: "/images/real-dates/real_dates_pic_01.webp", alt: "真实约会照片 1" },
-  { src: "/images/real-dates/real_dates_pic_02.webp", alt: "真实约会照片 2" },
-  { src: "/images/real-dates/real_dates_pic_03.webp", alt: "真实约会照片 3" },
+  { src: "/images/real-dates/real_dates_pic_02-nira-v2.webp", alt: "Nira 现实连接记录 2" },
+  { src: "/images/real-dates/real_dates_pic_03-nira-v2.webp", alt: "Nira 现实连接记录 3" },
 ];
 
 const stats = [

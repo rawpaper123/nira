@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://nira.social"),
   title: "Nira | 每周三帮你安排约会",
   description: "Nira 每周三为你精准匹配线下约会。",
-  keywords: ["约会", "匹配", "周三", "大学生", "Nira", "线下见面", "AI红娘"],
+  keywords: ["约会", "匹配", "周三", "大学生", "Nira", "线下见面", "AI匹配助手"],
   authors: [{ name: "Nira" }],
   openGraph: {
     title: "Nira | 每周三帮你安排约会",

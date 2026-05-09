@@ -1,6 +1,6 @@
 /**
- * Fix Ditto text in website images.
- * Covers "Ditto" branding with opaque color fills.
+ * Fix legacy brand text in website images.
+ * Covers legacy branding with opaque color fills.
  *
  * Usage: npx tsx scripts/fix-images.ts [--debug]
  * --debug draws red outlines around fix regions instead of applying fixes.
@@ -31,7 +31,7 @@ const COVERS: Cover[] = [
     color: "#C8A84E",
   },
   {
-    // "DITTO" on screen/projector
+    // Legacy brand mark on screen/projector
     file: "real-dates/real_dates_pic_03.webp",
     left: 80,
     top: 25,
@@ -40,7 +40,7 @@ const COVERS: Cover[] = [
     color: "#1A1A2E",
   },
   {
-    // "ditto makes it super easy..." in white chat bubble
+    // Legacy brand mention in white chat bubble
     file: "unforgettable/great_times_04.webp",
     left: 50,
     top: 640,

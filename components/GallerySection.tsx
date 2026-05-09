@@ -4,7 +4,7 @@ const images = [
   { src: "/images/unforgettable/great_times_01.webp", alt: "美好瞬间 1" },
   { src: "/images/unforgettable/great_times_02.webp", alt: "美好瞬间 2" },
   { src: "/images/unforgettable/great_times_03.webp", alt: "美好瞬间 3" },
-  { src: "/images/unforgettable/great_times_04.webp", alt: "美好瞬间 4" },
+  { src: "/images/unforgettable/great_times_04-nira-v2.webp", alt: "Nira 连接反馈" },
   { src: "/images/unforgettable/great_times_05.webp", alt: "美好瞬间 5" },
   { src: "/images/unforgettable/great_times_06.webp", alt: "美好瞬间 6" },
 ];

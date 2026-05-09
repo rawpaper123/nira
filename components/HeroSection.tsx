@@ -2,10 +2,18 @@
 
 import CountdownTimer from "./CountdownTimer";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { getNextWednesday19, formatMatchDate } from "@/lib/countdown";
 
 export default function HeroSection({ onJoinClick }: { onJoinClick: () => void }) {
-  const matchDateStr = formatMatchDate(getNextWednesday19());
+  const [matchDateStr, setMatchDateStr] = useState("计算中...");
+
+  useEffect(() => {
+    const tick = () => setMatchDateStr(formatMatchDate(getNextWednesday19()));
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-white px-6 pt-20">
