@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.routers import profile, match, schedule, test
+from app.routers import auth, profile, match, schedule, test
 
 
 @asynccontextmanager
@@ -27,6 +27,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router)
 app.include_router(profile.router)
 app.include_router(match.router)
 app.include_router(schedule.router)

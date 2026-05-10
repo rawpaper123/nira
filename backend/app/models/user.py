@@ -16,6 +16,7 @@ class User(Base):
     nickname: Mapped[str | None] = mapped_column(String(64))
     avatar_url: Mapped[str | None] = mapped_column(String(512))
     phone: Mapped[str | None] = mapped_column(String(20))
+    invite_code: Mapped[str] = mapped_column(String(16), unique=True, nullable=False)
     city: Mapped[str | None] = mapped_column(String(64))
     age: Mapped[int | None] = mapped_column(Integer)
     gender: Mapped[str | None] = mapped_column(String(10))
@@ -85,3 +86,15 @@ class Feedback(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="feedbacks")
+
+
+class PushSubscription(Base):
+    __tablename__ = "push_subscriptions"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[str] = mapped_column(String(128), unique=True, index=True)
+    openid: Mapped[str | None] = mapped_column(String(128))
+    subscribed: Mapped[bool] = mapped_column(default=True)
+    template_id: Mapped[str | None] = mapped_column(String(128))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
