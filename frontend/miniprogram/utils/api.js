@@ -130,8 +130,52 @@ function healthCheck() {
     });
 }
 
+/**
+ * POST /api/v1/auth/login
+ * wx.login code 换取 openid
+ */
+function login(code) {
+    return request({
+        url: '/api/v1/auth/login',
+        method: 'POST',
+        loading: false,
+        silent: true,
+        data: { code: code },
+    });
+}
+
+/**
+ * POST /api/v1/auth/send-verification-code
+ * 发送手机验证码
+ */
+function sendVerificationCode(phone) {
+    return request({
+        url: '/api/v1/auth/send-verification-code',
+        method: 'POST',
+        loadingText: '发送中...',
+        data: { phone: phone },
+    });
+}
+
+/**
+ * POST /api/v1/auth/verify-code-and-login
+ * 验证码登录（绑定 openid，新用户需传 invite_code）
+ */
+function verifyCodeAndLogin(phone, code, openid, inviteCode) {
+    const data = { phone: phone, code: code, openid: openid || '' };
+    if (inviteCode) data.invite_code = inviteCode;
+    return request({
+        url: '/api/v1/auth/verify-code-and-login',
+        method: 'POST',
+        loading: false,
+        data: data,
+    });
+}
 module.exports = {
     request,
+    login,
+    sendVerificationCode,
+    verifyCodeAndLogin,
     buildProfile,
     joinQueue,
     weeklyMatch,

@@ -99,6 +99,7 @@
     <!-- CTA -->
     <view class="cta-area" wx:if="{{!profileComplete}}">
         <button class="btn-primary btn-large" bindtap="onStartTap">开始匹配</button>
+        <button class="btn-primary btn-large" style="margin-top: 24rpx;" bindtap="onPhoneLogin" wx:if="{{!isLoggedIn}}">手机号登录</button>
         <text class="cta-hint">2 分钟，AI 帮你搞定一切</text>
     </view>
 

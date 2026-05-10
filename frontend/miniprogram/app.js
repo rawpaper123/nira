@@ -2,6 +2,7 @@ App({
     onLaunch() {
         console.log('Nira 小程序启动');
         this.ensureUserId();
+        this.doWxLogin();
     },
 
     globalData: {
@@ -11,6 +12,9 @@ App({
         currentMatch: null,
         activityPlan: null,
         userId: null,
+        openid: null,
+        phone: null,
+        token: null,
         profileCompleted: false,
         joinedQueue: false,
     },
@@ -28,6 +32,75 @@ App({
     getUserId() {
         if (!this.globalData.userId) this.ensureUserId();
         return this.globalData.userId;
+    },
+
+    getOpenId() {
+        return this.globalData.openid || wx.getStorageSync('nira_openid') || '';
+    },
+
+    // ---- Phone Login ----
+
+    isLoggedIn() {
+        return !!(this.globalData.phone || wx.getStorageSync('nira_phone'));
+    },
+
+    getPhone() {
+        return this.globalData.phone || wx.getStorageSync('nira_phone') || '';
+    },
+
+    loginWithPhone(data) {
+        if (data.phone) {
+            this.globalData.phone = data.phone;
+            wx.setStorageSync('nira_phone', data.phone);
+        }
+        if (data.openid) {
+            this.globalData.openid = data.openid;
+            wx.setStorageSync('nira_openid', data.openid);
+        }
+        if (data.userId) {
+            this.globalData.userId = data.userId;
+            wx.setStorageSync('nira_user_id', data.userId);
+        }
+        if (data.token) {
+            this.globalData.token = data.token;
+            wx.setStorageSync('token', data.token);
+        }
+    },
+
+    logout() {
+        this.globalData.phone = null;
+        this.globalData.token = null;
+        wx.removeStorageSync('nira_phone');
+        wx.removeStorageSync('token');
+    },
+
+    doWxLogin() {
+        const cached = wx.getStorageSync('nira_openid');
+        if (cached) {
+            this.globalData.openid = cached;
+            return;
+        }
+
+        const api = require('./utils/api');
+        wx.login({
+            success: (res) => {
+                if (res.code) {
+                    api.login(res.code).then((data) => {
+                        this.globalData.openid = data.openid;
+                        wx.setStorageSync('nira_openid', data.openid);
+                        if (data.user_id) {
+                            this.globalData.userId = data.user_id;
+                            wx.setStorageSync('nira_user_id', data.user_id);
+                        }
+                    }).catch((err) => {
+                        console.warn('wx.login 后端接口失败:', err);
+                    });
+                }
+            },
+            fail: () => {
+                console.warn('wx.login 调用失败');
+            },
+        });
     },
 
     // ---- Profile State ----

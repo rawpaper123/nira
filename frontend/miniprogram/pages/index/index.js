@@ -7,6 +7,7 @@ Page({
         profileComplete: false,
         hasMatch: false,
         joinedQueue: false,
+        isLoggedIn: false,
     },
 
     timer: null,
@@ -32,11 +33,13 @@ Page({
         const profileComplete = app.isProfileComplete();
         const hasMatch = !!app.getCurrentMatch();
         const joinedQueue = app.isJoinedQueue();
+        const isLoggedIn = app.isLoggedIn();
 
         this.setData({
             profileComplete,
             hasMatch,
             joinedQueue,
+            isLoggedIn,
         });
     },
 
@@ -51,7 +54,15 @@ Page({
     },
 
     onStartTap() {
+        if (!app.isLoggedIn()) {
+            wx.navigateTo({ url: '/pages/login/phone/index' });
+            return;
+        }
         wx.navigateTo({ url: '/pages/chat/chat' });
+    },
+
+    onPhoneLogin() {
+        wx.navigateTo({ url: '/pages/login/phone/index' });
     },
 
     onViewMatch() {
@@ -59,6 +70,10 @@ Page({
     },
 
     onFindMatch() {
+        if (!app.isLoggedIn()) {
+            wx.navigateTo({ url: '/pages/login/phone/index' });
+            return;
+        }
         wx.navigateTo({ url: '/pages/chat/chat' });
     },
 });

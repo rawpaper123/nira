@@ -1,0 +1,155 @@
+.container {
+    min-height: 100vh;
+    padding: 0 48rpx;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    padding: 120rpx 0 80rpx;
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 56rpx;
+    font-weight: 900;
+    color: #000000;
+    letter-spacing: 4rpx;
+}
+
+.subtitle {
+    font-size: 26rpx;
+    color: #999999;
+    margin-top: 16rpx;
+    letter-spacing: 2rpx;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 48rpx;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20rpx;
+}
+
+.label {
+    font-size: 22rpx;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: 6rpx;
+    text-transform: uppercase;
+}
+
+.phone-row {
+    display: flex;
+    align-items: center;
+    border-bottom: 2rpx solid #000000;
+    padding-bottom: 20rpx;
+}
+
+.country-code {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #000000;
+    margin-right: 24rpx;
+    letter-spacing: 2rpx;
+}
+
+.input {
+    flex: 1;
+    font-size: 32rpx;
+    color: #000000;
+    letter-spacing: 2rpx;
+    height: 48rpx;
+    line-height: 48rpx;
+}
+
+.code-row {
+    display: flex;
+    align-items: center;
+    border-bottom: 2rpx solid #000000;
+    padding-bottom: 20rpx;
+}
+
+.code-input {
+    flex: 1;
+}
+
+.invite-input {
+    border-bottom: 2rpx solid #000000;
+    padding-bottom: 20rpx;
+}
+
+.btn-code {
+    flex-shrink: 0;
+    font-size: 24rpx;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: 2rpx;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 24rpx;
+    line-height: 48rpx;
+    height: 48rpx;
+}
+
+.btn-code::after {
+    border: none;
+}
+
+.btn-code.disabled {
+    color: #CCCCCC;
+}
+
+.btn-login {
+    margin-top: 32rpx;
+    width: 100%;
+    height: 104rpx;
+    line-height: 104rpx;
+    background: #000000;
+    color: #FFFFFF;
+    font-size: 28rpx;
+    font-weight: 700;
+    letter-spacing: 6rpx;
+    text-align: center;
+    border: none;
+    border-radius: 0;
+}
+
+.btn-login::after {
+    border: none;
+}
+
+.btn-login.disabled {
+    background: #CCCCCC;
+}
+
+.footer {
+    margin-top: auto;
+    padding: 80rpx 0 60rpx;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.footer-text {
+    font-size: 22rpx;
+    color: #999999;
+    letter-spacing: 1rpx;
+}
+
+.footer-link {
+    font-size: 22rpx;
+    color: #000000;
+    letter-spacing: 1rpx;
+    font-weight: 600;
+}
