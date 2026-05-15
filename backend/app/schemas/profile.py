@@ -20,6 +20,12 @@ class ProfileBuildResponse(BaseModel):
     personality_tags: list[str]
     bio: str
     availability: dict
+    preferred_name: str = ""
+    preferred_style: str = ""
+    preferred_gender: str = "any"
+    preferred_type: str = ""
+    photo_urls: list[str] = Field(default_factory=list)
+    photo_status: str = "pending"
 
 
 class UserProfileRead(BaseModel):
