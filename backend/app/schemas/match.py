@@ -42,9 +42,27 @@ class MatchResult(BaseModel):
     simulation: list[SimulationScene]
     compatibility: CompatibilityDetail
     poster_url: str | None = None
+    matched_user_name: str | None = None
+    compatibility_score: int | None = None
+    reasons: list[str] = Field(default_factory=list)
+    suggested_activity: str | None = None
+    status: str = "matched"
 
 
 class WeeklyMatchResponse(BaseModel):
     matches: list[MatchResult]
     week_number: int
     total_candidates: int
+    status: str = "matched"
+    message: str = ""
+
+
+class AcceptMatchRequest(BaseModel):
+    match_id: str
+    user_id: str
+    role: str = "a"
+
+
+class RejectMatchRequest(BaseModel):
+    match_id: str
+    user_id: str
