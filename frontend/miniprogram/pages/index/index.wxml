@@ -97,7 +97,12 @@
     </view>
 
     <!-- CTA -->
-    <view class="cta-area" wx:if="{{!profileComplete}}">
+    <view class="cta-area" wx:if="{{isLoggedIn && isRestoringProfile && !profileComplete}}">
+        <button class="btn-secondary btn-large" loading="{{true}}" disabled="{{true}}">正在恢复档案...</button>
+        <text class="cta-hint">稍等一下，Nira 正在找回你的资料</text>
+    </view>
+
+    <view class="cta-area" wx:if="{{!profileComplete && !isRestoringProfile}}">
         <button class="btn-primary btn-large" bindtap="onStartTap">开始匹配</button>
         <button class="btn-primary btn-large" style="margin-top: 24rpx;" bindtap="onPhoneLogin" wx:if="{{!isLoggedIn}}">手机号登录</button>
         <text class="cta-hint">2 分钟，AI 帮你搞定一切</text>
@@ -117,7 +122,7 @@
     </view>
 
     <view class="cta-area" wx:if="{{profileComplete && !joinedQueue && !hasMatch}}">
-        <button class="btn-primary btn-large" bindtap="onFindMatch">寻找搭子</button>
-        <text class="cta-hint">和 AI 聊聊，找到你的活动搭子</text>
+        <button class="btn-primary btn-large" bindtap="onFindMatch">查看档案</button>
+        <text class="cta-hint">档案已完成，后续匹配流程会在下一步接入</text>
     </view>
 </view>

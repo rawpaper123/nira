@@ -66,6 +66,18 @@ function buildProfile(userId, rawInput) {
 }
 
 /**
+ * GET /api/v1/profile/{userId}
+ */
+function getProfile(userId) {
+    return request({
+        url: `/api/v1/profile/${userId}`,
+        method: 'GET',
+        loading: false,
+        silent: true,
+    });
+}
+
+/**
  * POST /api/v1/match/join-queue
  * 加入本周匹配队列
  */
@@ -177,6 +189,7 @@ module.exports = {
     sendVerificationCode,
     verifyCodeAndLogin,
     buildProfile,
+    getProfile,
     joinQueue,
     weeklyMatch,
     arrangeActivity,

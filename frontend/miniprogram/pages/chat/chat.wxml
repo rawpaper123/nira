@@ -29,24 +29,13 @@
         </button>
     </view>
 
-    <!-- 已加入队列状态 -->
-    <view class="match-cta safe-bottom" wx:if="{{chatComplete && alreadyJoined}}">
+    <!-- 画像完成状态 -->
+    <view class="match-cta safe-bottom" wx:if="{{chatComplete}}">
         <view class="queue-done-card">
             <text class="queue-done-icon">✓</text>
-            <text class="queue-done-text">已加入本周匹配队列</text>
-            <text class="queue-done-hint">下周三 19:00 揭晓结果</text>
+            <text class="queue-done-text">档案已完成</text>
+            <text class="queue-done-hint">回首页查看当前状态</text>
         </view>
         <button class="btn-secondary" style="margin-top: 16rpx;" bindtap="onGoHome">返回首页</button>
-    </view>
-
-    <!-- 加入队列按钮（画像完成、未加入） -->
-    <view class="match-cta safe-bottom" wx:if="{{chatComplete && !alreadyJoined}}">
-        <button class="btn-primary btn-match" catchtap="onJoinQueue" disabled="{{isJoiningQueue}}">
-            {{isJoiningQueue ? '加入中...' : '加入本周匹配队列'}}
-        </button>
-        <view class="retry-area" wx:if="{{joinError}}">
-            <text class="match-error">{{joinError}}</text>
-            <text class="match-retry" catchtap="onJoinQueue">点击重试</text>
-        </view>
     </view>
 </view>

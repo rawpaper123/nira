@@ -1,4 +1,5 @@
 const app = getApp();
+const api = require('../../utils/api');
 const util = require('../../utils/util');
 
 Page({
@@ -8,6 +9,7 @@ Page({
         hasMatch: false,
         joinedQueue: false,
         isLoggedIn: false,
+        isRestoringProfile: false,
     },
 
     timer: null,
@@ -18,6 +20,7 @@ Page({
 
     onShow() {
         this.refreshState();
+        this.restoreRemoteProfile();
         this.startCountdown();
     },
 
@@ -41,6 +44,21 @@ Page({
             joinedQueue,
             isLoggedIn,
         });
+    },
+
+    async restoreRemoteProfile() {
+        if (!app.isLoggedIn() || app.isProfileComplete()) return;
+
+        this.setData({ isRestoringProfile: true });
+        try {
+            const profile = await api.getProfile(app.getUserId());
+            app.setProfile(profile);
+            this.refreshState();
+        } catch (err) {
+            // 404 表示还没完成 onboarding，保持首页未完成状态即可。
+        } finally {
+            this.setData({ isRestoringProfile: false });
+        }
     },
 
     startCountdown() {

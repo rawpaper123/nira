@@ -8,41 +8,65 @@ Page({
     data: {
         messages: [],
         inputValue: '',
-        inputPlaceholder: '说说你喜欢什么...',
+        inputPlaceholder: '你的小名或昵称...',
         isAiTyping: false,
         chatComplete: false,
         chatHistory: '',
         userId: '',
         step: 0,
-        isJoiningQueue: false,
-        joinError: '',
-        alreadyJoined: false,
+        preferredName: '',
+        preferredStyle: '',
+        preferredGender: 'any',
+        preferredType: '',
     },
 
     onLoad() {
         this.setData({ userId: app.getUserId() });
+
+        if (!app.isLoggedIn()) {
+            wx.navigateTo({ url: '/pages/login/phone/index' });
+            this.addAiMessage('先登录一下下，登录完我就继续帮你整理档案～');
+            return;
+        }
+
         this.loadChatHistory();
+    },
+
+    onShow() {
+        this.setData({ userId: app.getUserId() });
     },
 
     // ---- 聊天记录持久化 ----
 
     loadChatHistory() {
         const saved = wx.getStorageSync(MSG_STORAGE);
+        const profile = app.getProfile();
+        const savedName = wx.getStorageSync('nira_preferred_name') || (profile && profile.preferred_name) || '';
+
         if (saved && saved.length > 0) {
             const chatComplete = app.isProfileComplete();
-            const alreadyJoined = app.isJoinedQueue();
             this.setData({
                 messages: saved,
                 chatHistory: wx.getStorageSync(HISTORY_STORAGE) || '',
                 chatComplete,
-                alreadyJoined,
-                step: chatComplete ? 3 : 0,
+                preferredName: savedName,
+                step: chatComplete ? 6 : 0,
+                inputPlaceholder: chatComplete ? '' : '继续说说你的偏好...',
             });
+        } else if (app.isProfileComplete()) {
+            this.setData({
+                chatComplete: true,
+                preferredName: savedName,
+                inputPlaceholder: '',
+            });
+            this.addAiMessage(
+                `${savedName || '朋友'}，你的档案已经准备好了。\n\n` +
+                '回首页就能看到当前状态。'
+            );
         } else {
             this.addAiMessage(
-                '嗨！我是 Nira AI 🤖\n\n' +
-                '告诉我你的兴趣爱好吧～比如你喜欢什么活动、周末一般什么时候有空？\n\n' +
-                '随便聊，我会帮你找到最合适的活动搭子！'
+                '嗨！我是 Nira～\n\n' +
+                '先说说你怎么称呼吧？朋友们平时叫你啥？'
             );
         }
     },
@@ -99,100 +123,158 @@ Page({
         const step = this.data.step + 1;
         this.setData({ step });
 
-        if (step >= 3) {
+        if (step === 1) {
+            this.handleNicknameReply(text);
+        } else if (step === 4) {
+            this.handleGenderTypeReply(text);
+        } else if (step === 5) {
+            this.handleStyleReply(text);
+        } else if (step >= 6) {
             this.buildProfile();
         } else {
             this.followUp(step);
         }
     },
 
+    handleNicknameReply(name) {
+        this.setData({
+            preferredName: name,
+            inputPlaceholder: '说说你喜欢什么...',
+        });
+        wx.setStorageSync('nira_preferred_name', name);
+
+        this.setData({ isAiTyping: true });
+        setTimeout(() => {
+            this.setData({ isAiTyping: false });
+            this.addAiMessage(
+                `${name}是吧，记住了！\n\n` +
+                '聊聊你喜欢啥呗？周末一般怎么过，平时有什么爱好，随便说～'
+            );
+        }, 600 + Math.random() * 400);
+    },
+
     followUp(step) {
+        const name = this.data.preferredName;
         const responses = [
-            '有意思！还有别的爱好吗？比如户外、桌游、看展之类的？',
-            '了解啦～你周末一般什么时间段比较空呀？上午、下午还是晚上？',
+            '',
+            `哦？还有别的吗${name ? ' ' + name : ''}？户外、桌游、看展、做饭，有没有感兴趣的？`,
+            '了解！那周末一般啥时候比较空呀？上午下午晚上都说说～',
+            '最后两个小问题：这次想遇到什么样的人？比如男生 / 女生 / 都可以，或者直接描述你喜欢的性格和相处感。',
         ];
         this.setData({ isAiTyping: true });
         setTimeout(() => {
             this.setData({ isAiTyping: false });
-            this.addAiMessage(responses[step - 1] || '好的，再聊聊你的偏好？');
+            this.addAiMessage(responses[step] || '嗯嗯，还有啥想补充的不？');
         }, 800 + Math.random() * 600);
+    },
+
+    handleGenderTypeReply(text) {
+        const preferredGender = this.detectPreferredGender(text);
+        this.setData({ preferredGender, preferredType: text });
+        wx.setStorageSync('nira_preferred_gender', preferredGender);
+        wx.setStorageSync('nira_preferred_type', text);
+
+        this.setData({ isAiTyping: true });
+        setTimeout(() => {
+            this.setData({ isAiTyping: false });
+            this.addAiMessage(
+                '懂了懂了。\n\n' +
+                '再问一个：你平时审美偏什么风格？比如 Y2K、动漫风、极简高级感、氛围感、治愈系、复古，或者你自己描述也行。'
+            );
+        }, 600 + Math.random() * 400);
+    },
+
+    handleStyleReply(text) {
+        this.setData({ preferredStyle: text });
+        wx.setStorageSync('nira_preferred_style', text);
+
+        this.setData({ isAiTyping: true });
+        setTimeout(() => {
+            this.setData({ isAiTyping: false });
+            this.addAiMessage(`${text}是吧，品味不错。\n\n我这就给你整理档案，稍等一下哈。`);
+            setTimeout(() => {
+                this.buildProfile();
+            }, 600);
+        }, 600 + Math.random() * 400);
+    },
+
+    detectPreferredGender(text) {
+        if (text.indexOf('男') !== -1) return 'male';
+        if (text.indexOf('女') !== -1) return 'female';
+        return 'any';
     },
 
     // ---- 画像构建 ----
 
     async buildProfile() {
+        if (!app.isLoggedIn()) {
+            wx.navigateTo({ url: '/pages/login/phone/index' });
+            return;
+        }
+
         this.setData({ isAiTyping: true });
 
+        const name = this.data.preferredName || wx.getStorageSync('nira_preferred_name') || '朋友';
+        const style = this.data.preferredStyle || wx.getStorageSync('nira_preferred_style') || '';
+        const preferredGender = this.data.preferredGender || wx.getStorageSync('nira_preferred_gender') || 'any';
+        const preferredType = this.data.preferredType || wx.getStorageSync('nira_preferred_type') || '';
+
+        const profileInput = [
+            `我的昵称/小名是：${name}`,
+            style ? `我的审美/视觉风格偏好是：${style}` : '',
+            preferredGender ? `我偏好的连接对象性别：${preferredGender}` : '',
+            preferredType ? `我想要的搭子/偏好类型：${preferredType}` : '',
+            '',
+            this.data.chatHistory,
+        ].filter(Boolean).join('\n');
+
         try {
-            const result = await api.buildProfile(this.data.userId, this.data.chatHistory);
+            const profile = await api.buildProfile(this.data.userId, profileInput);
+            if (!profile.preferred_name) profile.preferred_name = name;
+            if (!profile.preferred_style) profile.preferred_style = style;
+            if (!profile.preferred_gender) profile.preferred_gender = preferredGender;
+            if (!profile.preferred_type) profile.preferred_type = preferredType;
 
-            const profile = result;
-            const interests = (profile.interests || []).join('、');
-            const activities = (profile.activity_types || []).join('、');
-            const tags = (profile.personality_tags || []).join('、');
-
-            this.setData({ isAiTyping: false });
-            this.addAiMessage(
-                `画像生成好啦！✨\n\n` +
-                `兴趣：${interests}\n` +
-                `活动：${activities}\n` +
-                `性格：${tags}\n\n` +
-                `点击下方按钮，加入本周匹配队列！`
-            );
-
-            app.setProfile(profile);
-            this.setData({ chatComplete: true });
+            this.finishProfile(profile, false);
         } catch (err) {
-            this.setData({ isAiTyping: false });
-
             const localProfile = {
-                interests: ['户外运动', '咖啡'],
-                activity_types: ['hiking', 'coffee_chat'],
-                personality_tags: ['extrovert', 'adventurous'],
-                bio: '热情开朗的活动爱好者',
-                availability: { weekdays: ['evening'], weekends: ['morning', 'afternoon'] },
+                preferred_name: name,
+                interests: ['咖啡探店', '城市漫步'],
+                activity_types: ['coffee_chat', 'city_walk'],
+                personality_tags: ['chill', 'social'],
+                bio: '有点会玩，也有点会生活',
+                preferred_style: style || '极简高级感',
+                preferred_gender: preferredGender,
+                preferred_type: preferredType,
+                availability: { weekdays: ['evening'], weekends: ['afternoon', 'evening'] },
+                photo_urls: [],
+                photo_status: 'pending',
             };
-
-            this.addAiMessage(
-                `画像生成好啦！✨（本地模式）\n\n` +
-                `兴趣：${localProfile.interests.join('、')}\n` +
-                `活动：${localProfile.activity_types.join('、')}\n` +
-                `性格：${localProfile.personality_tags.join('、')}\n\n` +
-                `点击下方按钮，加入本周匹配队列。`
-            );
-
-            app.setProfile(localProfile);
-            this.setData({ chatComplete: true });
+            this.finishProfile(localProfile, true);
         }
     },
 
-    // ---- 加入匹配队列（Ditto 模式） ----
+    finishProfile(profile, isLocalMode) {
+        const name = profile.preferred_name || this.data.preferredName || '朋友';
+        const interests = (profile.interests || []).join('、');
+        const activities = (profile.activity_types || []).join('、');
+        const tags = (profile.personality_tags || []).join('、');
+        const style = profile.preferred_style || '';
+        const preferredType = profile.preferred_type || '';
 
-    async onJoinQueue() {
-        if (this.data.isJoiningQueue) return;
-
-        this.setData({ isJoiningQueue: true, joinError: '' });
-
-        try {
-            const profile = app.getProfile();
-            await api.joinQueue(this.data.userId, profile);
-            this.onQueueJoined();
-        } catch (err) {
-            // API 失败也本地入队（开发模式降级）
-            console.log('joinQueue API failed, local fallback:', err.message);
-            this.onQueueJoined();
-        }
-    },
-
-    onQueueJoined() {
-        app.joinQueue();
-        this.setData({ isJoiningQueue: false, alreadyJoined: true });
-
+        this.setData({ isAiTyping: false });
         this.addAiMessage(
-            '已成功加入本周匹配队列！🎉\n\n' +
-            '下周三 19:00 将为你揭晓匹配结果，届时会通过消息通知你。\n\n' +
-            '现在可以返回首页等待啦～'
+            `${name}，你的档案搞定啦${isLocalMode ? '（本地模式）' : ''}！看看准不准～\n\n` +
+            `兴趣：${interests}\n` +
+            `活动：${activities}\n` +
+            `性格：${tags}\n` +
+            (style ? `风格：${style}\n` : '') +
+            (preferredType ? `理想相处感：${preferredType}\n` : '') +
+            '\n回首页就能看到当前状态。'
         );
+
+        app.setProfile(profile);
+        this.setData({ chatComplete: true, inputPlaceholder: '' });
     },
 
     onGoHome() {
