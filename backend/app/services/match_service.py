@@ -186,6 +186,9 @@ async def run_weekly_match(
         "total_candidates": len(candidate_profiles),
     }
 
+    # 匹配成功后异步推送通知（不阻塞主流程）
+    await _notify_match_result(result, str(user_id))
+
     return result
 
 
@@ -372,6 +375,37 @@ def _profile_is_complete(profile: dict | None) -> bool:
     if not profile:
         return False
     return bool(profile.get("interests") or profile.get("activity_types") or profile.get("bio"))
+
+
+async def _notify_match_result(match_result: dict, user_id: str):
+    """匹配成功后推送通知给用户"""
+    try:
+        from app.services.push_service import get_subscription, push_match_result
+
+        sub = get_subscription(user_id)
+        if not sub or not sub.get("subscribed"):
+            return
+
+        openid = sub.get("openid")
+        if not openid:
+            return
+
+        score = int((match_result.get("score") or 0) * 100)
+        nickname = match_result.get("user_b_nickname") or "活动搭子"
+        match_id = match_result.get("match_id", "")
+
+        await push_match_result(
+            openid=openid,
+            match_id=match_id,
+            score=score,
+            nickname=nickname,
+        )
+    except Exception as e:
+        import logging
+        logging.warning(f"推送匹配结果失败: {e}")
+
+
+# ---- 接受/拒绝匹配 + 拉群逻辑 ----
 
 
 def _get_match_accept(match_id: str) -> dict:

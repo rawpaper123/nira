@@ -16,6 +16,7 @@ class Settings(BaseSettings):
 
     wx_appid: str = ""
     wx_secret: str = ""
+    wx_template_id_match: str = ""
     genesis_invite_code: str = "NIRA2026"  # 创始邀请码（User < 1000 时可用）
 
     cos_secret_id: str = ""
