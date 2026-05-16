@@ -25,7 +25,7 @@
         <view class="card info-card">
             <view class="info-row">
                 <text class="info-label">地点</text>
-                <text class="info-value">{{plan.location}}</text>
+                <text class="info-value">{{plan.suggested_location || plan.location}}</text>
             </view>
             <view class="divider"></view>
             <view class="info-row">
@@ -37,6 +37,12 @@
                 <text class="info-label">时长</text>
                 <text class="info-value">{{plan.duration}}</text>
             </view>
+        </view>
+
+        <!-- Reason -->
+        <view class="card" wx:if="{{plan.reason}}">
+            <text class="section-title">推荐理由</text>
+            <text class="welcome-text">{{plan.reason}}</text>
         </view>
 
         <!-- Tips -->
@@ -66,7 +72,9 @@
 
         <!-- CTA -->
         <view class="cta-area safe-bottom">
-            <button class="btn-primary btn-large" bindtap="onConfirm">确认活动</button>
+            <button class="btn-primary btn-large" loading="{{confirming}}" disabled="{{confirming}}" bindtap="onConfirm">
+                {{confirming ? '确认中...' : '确认这个安排'}}
+            </button>
         </view>
     </view>
 </view>

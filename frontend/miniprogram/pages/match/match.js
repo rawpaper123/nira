@@ -21,11 +21,13 @@ Page({
             chemistry_from_sim: 0,
         },
         matchStatus: 'loading', // loading | waiting | ready | accepted | rejected
+        accepting: false,
     },
 
     timeoutTimer: null,
 
-    onLoad() {
+    onLoad(options) {
+        this.setData({ matchId: (options && options.match_id) || '' });
         this.loadMatch();
     },
 
@@ -34,6 +36,15 @@ Page({
     },
 
     async loadMatch() {
+        if (!app.isLoggedIn()) {
+            this.setData({
+                loading: false,
+                matchStatus: 'not_joined',
+                errorMsg: '先登录并完成档案，再来看本周匹配。',
+            });
+            return;
+        }
+
         // 1. 先检查本地是否已有匹配结果
         const cached = app.getCurrentMatch();
         if (cached && cached.score) {
@@ -51,33 +62,30 @@ Page({
             }
         }, MATCH_TIMEOUT);
 
-        // 3. 尝试从后端拉取匹配结果
+        // 3. 优先从后端查询当前匹配结果/队列状态
         const userId = app.getUserId();
 
         try {
-            const result = await api.weeklyMatch(userId, '上海');
+            const result = await api.getMatchResult(userId);
             clearTimeout(this.timeoutTimer);
             this.handleMatchResult(result);
             return;
         } catch (err) {
-            console.log('weeklyMatch failed:', err.message);
+            console.log('getMatchResult failed:', err.message);
         }
 
-        // 4. 降级到 test API
+        // 4. Development fallback: trigger weekly mock locally
         try {
-            const profile = app.getProfile();
-            const userAInput = wx.getStorageSync('nira_chat_history') || '我喜欢户外运动和咖啡';
-            const partnerInput = '我是个文艺范的女生，喜欢看展、city walk，最近想尝试户外活动但一个人不太敢去';
-
-            const testResult = await api.testMatch(userAInput, partnerInput, '上海');
+            const testResult = await api.weeklyMatch(userId, '上海');
             clearTimeout(this.timeoutTimer);
-            this.handleTestResult(testResult);
+            this.handleMatchResult(testResult);
         } catch (err) {
             clearTimeout(this.timeoutTimer);
             this.setData({
                 loading: false,
-                loadError: true,
-                errorMsg: '后端服务未启动，请先运行后端 API',
+                matchStatus: app.isJoinedQueue() ? 'waiting' : 'not_joined',
+                loadError: false,
+                errorMsg: app.isJoinedQueue() ? '还没有匹配结果，晚点再来看看。' : '先加入本周匹配队列。',
             });
         }
     },
@@ -99,12 +107,17 @@ Page({
                 chemistry_from_sim: Math.round((compat.chemistry_from_sim || 0) * 100),
             },
         });
+        app.setMatchResult(matchData);
     },
 
     handleMatchResult(result) {
         const match = (result.matches && result.matches[0]) || null;
         if (!match) {
-            this.setData({ loading: false, matchStatus: 'waiting' });
+            this.setData({
+                loading: false,
+                matchStatus: result.status === 'not_joined' ? 'not_joined' : 'waiting',
+                errorMsg: result.message || '',
+            });
             return;
         }
 
@@ -125,7 +138,7 @@ Page({
             },
         });
 
-        app.setCurrentMatch(match);
+        app.setMatchResult(match);
     },
 
     handleTestResult(result) {
@@ -170,18 +183,42 @@ Page({
 
     // ---- 接受 / 拒绝 ----
 
-    onAccept() {
-        this.setData({ matchStatus: 'accepted' });
-        wx.showToast({ title: '已接受匹配！', icon: 'success' });
-        // 进入活动安排页
+    async onAccept() {
         const match = this.data.matchData;
-        if (match) {
-            setTimeout(() => {
-                wx.navigateTo({
-                    url: `/pages/schedule/schedule?matchId=${match.match_id}`,
-                });
-            }, 1000);
+        if (!match || !match.match_id || this.data.accepting) return;
+
+        this.setData({ accepting: true, matchStatus: 'accepted' });
+
+        try {
+            const userId = app.getUserId();
+            const acceptResult = await api.acceptMatch(match.match_id, userId, 'a');
+            app.setGroupInfo({
+                group_id: acceptResult.group_id || '',
+                match_id: match.match_id,
+                status: acceptResult.status || 'accepted_first',
+            });
+        } catch (err) {
+            console.log('acceptMatch failed, using local fallback:', err.message);
+            app.setGroupInfo({
+                group_id: `local-group-${Date.now()}`,
+                match_id: match.match_id,
+                status: 'local_accepted',
+            });
         }
+
+        app.addMatchHistory({
+            activity: match.compatibility && match.compatibility.reasoning
+                ? match.compatibility.reasoning.slice(0, 8) : '活动',
+            score: this.data.score,
+            status: 'accepted',
+        });
+        wx.showToast({ title: '已接受匹配', icon: 'success' });
+        setTimeout(() => {
+            this.setData({ accepting: false });
+            wx.navigateTo({
+                url: `/pages/schedule/schedule?matchId=${match.match_id}`,
+            });
+        }, 700);
     },
 
     onReject() {
@@ -198,7 +235,7 @@ Page({
                     app.setCurrentMatch(null);
                     wx.showToast({ title: '已拒绝，下周重新匹配', icon: 'none' });
                     setTimeout(() => {
-                        wx.reLaunch({ url: '/pages/index/index' });
+                        wx.switchTab({ url: '/pages/index/index' });
                     }, 1500);
                 }
             },
@@ -214,11 +251,12 @@ Page({
     },
 
     onRetry() {
-        this.setData({ loading: true, loadError: false });
+        if (this.timeoutTimer) clearTimeout(this.timeoutTimer);
+        this.setData({ loading: true, loadError: false, matchStatus: 'loading', errorMsg: '' });
         this.loadMatch();
     },
 
     onGoHome() {
-        wx.reLaunch({ url: '/pages/index/index' });
+        wx.switchTab({ url: '/pages/index/index' });
     },
 });

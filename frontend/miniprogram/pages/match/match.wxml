@@ -8,7 +8,14 @@
     <!-- 等待匹配（超时后） -->
     <view class="loading-state" wx:if="{{matchStatus === 'waiting'}}">
         <text class="loading-text">匹配进行中，请稍后查看</text>
-        <text class="loading-hint">周三 19:00 揭晓结果，届时会通知你</text>
+        <text class="loading-hint">{{errorMsg || '周三 19:00 揭晓结果，届时会通知你'}}</text>
+        <button class="btn-primary" style="margin-top: 40rpx; width: 320rpx;" bindtap="onGoHome">返回首页</button>
+    </view>
+
+    <!-- 未加入队列 -->
+    <view class="loading-state" wx:if="{{matchStatus === 'not_joined'}}">
+        <text class="loading-text">还没加入本周匹配</text>
+        <text class="loading-hint">{{errorMsg || '先完成画像并加入队列，周三 19:00 再来看结果'}}</text>
         <button class="btn-primary" style="margin-top: 40rpx; width: 320rpx;" bindtap="onGoHome">返回首页</button>
     </view>
 
@@ -41,10 +48,11 @@
                     <text>?</text>
                 </view>
                 <view class="match-info">
-                    <text class="match-name">{{matchData.user_b_nickname || '活动搭子'}}</text>
+                    <text class="match-name">{{matchData.matched_user_name || matchData.user_b_nickname || '活动搭子'}}</text>
                     <text class="match-score-text">匹配度 {{score}}%</text>
                 </view>
             </view>
+            <text class="reasoning-text" wx:if="{{matchData.suggested_activity}}">建议活动：{{matchData.suggested_activity}}</text>
         </view>
 
         <!-- Why Matched -->
@@ -100,7 +108,9 @@
 
         <!-- Accept / Reject -->
         <view class="cta-area safe-bottom">
-            <button class="btn-primary btn-large" bindtap="onAccept">接受匹配</button>
+            <button class="btn-primary btn-large" loading="{{accepting}}" disabled="{{accepting}}" bindtap="onAccept">
+                {{accepting ? '确认中...' : '接受匹配'}}
+            </button>
             <button class="btn-reject" bindtap="onReject">不感兴趣，重新匹配</button>
         </view>
     </view>
