@@ -1,3 +1,140 @@
+## 2026-05-17 Multi-Milestone Cleanup
+
+### Git Safety
+
+- Work branch: `work/push-notification-baseline`
+- Checkpoint commit before this run: `97fb9f84abc1c63ca89012c763fa0cda5c5f6a2c`
+- No push was performed.
+- Staged area was checked before and after each commit.
+- Real secrets, `.codex`, generated poster images, package files, and mixed poster/COS work were not committed.
+
+### Milestone Results
+
+- Milestone 0 - Push milestone review: completed. Push commits were checked by `git show --stat` and `git show --name-only`; no package, poster/COS/static poster, me/images, broad agent refactor, or real secret was found.
+- Milestone 1 - LLM/provider/config baseline: partially completed. Committed only provider configuration and the shared OpenAI-compatible fallback adapter. Broad agent prompt rewrites, poster orchestration, and test router/script changes remain uncommitted because they are behavior changes and partly poster-related.
+- Milestone 2 - Poster/COS/static assets: skipped. The remaining work includes untracked poster agent/image/COS files, large generated poster PNGs under `backend/app/static/posters`, broad orchestrator changes, and package-lock churn from image dependencies. This needs a dedicated poster milestone.
+- Milestone 3 - Miniprogram me/tabBar/images: completed. Added the profile tab, tabBar registration, small tabBar icons, and a minimal `switchTab` fix for the me page edit-profile action.
+- Milestone 4 - Docs/handoff: completed by this section.
+
+### Commits Created
+
+- `7615886a47b2c80aa7234e14fa1ba550aae56979` - `feat: add configurable llm provider baseline`
+  - `backend/.env.example`
+  - `backend/app/agents/base.py`
+  - `backend/app/core/config.py`
+  - `backend/requirements.txt`
+- `953a3c513a538118ea823e6ac0747a089010fe60` - `feat: add miniprogram profile tab baseline`
+  - `frontend/miniprogram/app.json`
+  - `frontend/miniprogram/images/chat.png`
+  - `frontend/miniprogram/images/chat_active.png`
+  - `frontend/miniprogram/images/home.png`
+  - `frontend/miniprogram/images/home_active.png`
+  - `frontend/miniprogram/images/match.png`
+  - `frontend/miniprogram/images/match_active.png`
+  - `frontend/miniprogram/images/me.png`
+  - `frontend/miniprogram/images/me_active.png`
+  - `frontend/miniprogram/pages/me/me.js`
+  - `frontend/miniprogram/pages/me/me.json`
+  - `frontend/miniprogram/pages/me/me.wxml`
+  - `frontend/miniprogram/pages/me/me.wxss`
+
+### LLM Provider Baseline
+
+- `LLM_PROVIDER=auto` means DeepSeek -> OpenAI -> Qwen when keys are available.
+- `DEEPSEEK_API_KEY`, `OPENAI_API_KEY`, and model names are documented as placeholders in `.env.example`; no real key was committed.
+- `get_llm()` now returns a fallback adapter that can call DeepSeek/OpenAI through the OpenAI-compatible client, then fall back to Qwen.
+- No real paid LLM smoke call was executed in this run.
+
+### Miniprogram Profile Tab Baseline
+
+- `app.json` now registers `pages/me/me` and a four-item tabBar: home, chat, match, me.
+- The new `me` page reads local profile, queue, user id, and match history state from `app.js` helpers.
+- The edit-profile action uses `wx.switchTab()` because `pages/chat/chat` is now a tabBar page.
+- TabBar icons are small local PNG assets, each under 300 bytes.
+
+### Verification Results
+
+Backend:
+
+```bash
+cd backend
+.venv\Scripts\python.exe -m compileall app
+curl http://localhost:8000/health
+```
+
+Result: passed. `/health` returned:
+
+```json
+{"status":"ok","app":"Nira","env":"development"}
+```
+
+Frontend:
+
+```bash
+node --check frontend\miniprogram\app.js
+node --check frontend\miniprogram\utils\api.js
+node --check frontend\miniprogram\pages\chat\chat.js
+node --check frontend\miniprogram\pages\index\index.js
+node --check frontend\miniprogram\pages\match\match.js
+node --check frontend\miniprogram\pages\schedule\schedule.js
+node --check frontend\miniprogram\pages\group\group.js
+node --check frontend\miniprogram\pages\me\me.js
+```
+
+Result: passed.
+
+Additional check:
+
+```bash
+node -e "parse app.json and verify registered pages/tabBar icon files exist"
+```
+
+Result: passed.
+
+### Still Uncommitted
+
+- LLM/agent behavior work: prompt and scoring changes in `backend/app/agents/compatibility_agent.py`, `profile_agent.py`, `scheduler_agent.py`, `simulation_agent.py`, plus poster-related `orchestrator.py`.
+- Poster/COS/static: `poster_agent.py`, `poster_image_service.py`, `cos_upload.py`, `backend/app/static/posters/*.png`.
+- Push/generated local data: `backend/app/data/`.
+- Mixed frontend residue: `frontend/miniprogram/app.js`, `app.wxss`, `components/chat-bubble/*`, `pages/chat/*`, `pages/index/*`, `pages/match/match.js`, `utils/api.js`.
+- Package files: `package.json`, `package-lock.json`; not submitted because the diff includes broad Next/package metadata and native image dependencies.
+- Docs/local: `CLAUDE.md`, `NIRA_PROJECT_CONTEXT.md`.
+
+### Rollback
+
+Rollback this multi-milestone run to the checkpoint:
+
+```bash
+git reset --hard 97fb9f84abc1c63ca89012c763fa0cda5c5f6a2c
+```
+
+Revert a single commit while preserving history:
+
+```bash
+git revert <commit_hash>
+```
+
+Only unstage files:
+
+```bash
+git restore --staged <file>
+```
+
+Only discard a specific uncommitted file:
+
+```bash
+git restore <file>
+```
+
+Do not remove untracked/generated files automatically unless reviewed first; if the user approves cleanup later, use a targeted remove command instead of broad `git clean -fd`.
+
+### Next Suggestions
+
+1. Run a dedicated poster/COS milestone: fix encoding/readability, separate backend poster text fallback from real image generation, avoid committing generated PNGs by default, and decide whether package image dependencies are truly needed.
+2. Run a dedicated agent-quality milestone for compatibility/simulation/scheduler prompt changes without mixing poster orchestration.
+3. Review mixed frontend visual changes (`app.wxss`, index styles, chat-bubble poster display) with a UI-specific acceptance pass before committing.
+4. Once the current branch is reviewed, consider opening a PR rather than continuing to stack unrelated feature commits.
+
 ## 2026-05-17 Push Notification Baseline Milestone
 
 ### Git Safety
@@ -2180,7 +2317,7 @@ Nira 现在可以安全接入 OpenAI API key，但当前这枚 key/项目无法�
 
 ```env
 LLM_PROVIDER=openai
-OPENAI_API_KEY=sk-...
+OPENAI_API_KEY=your-openai-api-key-here
 OPENAI_MODEL=gpt-4.1-nano
 ```
 ## 2026-05-15 DeepSeek First LLM Fallback Chain
