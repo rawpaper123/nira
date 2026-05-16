@@ -139,3 +139,54 @@
     margin-top: 12rpx;
     letter-spacing: 2rpx;
 }
+
+/* Push test panel */
+.test-push-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 28rpx 32rpx;
+    background: #FFFFFF;
+    border-top: 2rpx dashed #000000;
+    z-index: 40;
+}
+
+.test-push-header {
+    font-size: 22rpx;
+    font-weight: 900;
+    color: #000000;
+    margin-bottom: 20rpx;
+    letter-spacing: 4rpx;
+}
+
+.test-push-input {
+    height: 68rpx;
+    background: #F5F5F5;
+    border: 2rpx solid #000000;
+    padding: 0 24rpx;
+    font-size: 24rpx;
+    color: #000000;
+    margin-bottom: 20rpx;
+}
+
+.test-push-btn, .test-push-btn-secondary {
+    height: 76rpx;
+    line-height: 76rpx;
+    font-size: 26rpx;
+    border: none;
+    margin-bottom: 16rpx;
+}
+
+.test-push-btn {
+    background: #000000;
+    color: #FFFFFF;
+}
+
+.test-push-btn-secondary {
+    background: #FFFFFF;
+    color: #000000;
+    border: 2rpx solid #000000;
+}
+
+.test-push-btn::after, .test-push-btn-secondary::after { border: none; }

@@ -17,6 +17,11 @@ Page({
         isJoiningQueue: false,
         joinError: '',
         alreadyJoined: false,
+        fromPush: false,
+        pushMatchId: '',
+        showTestPush: false,
+        testPushSending: false,
+        testPushOpenid: '',
         preferredName: '',
         preferredGender: '',
         preferredType: '',
@@ -31,6 +36,16 @@ Page({
             this.addAiMessage('先登录一下下，登录完我就继续帮你整理档案～');
             return;
         }
+
+        const isDev = (app.globalData.apiBase || '').indexOf('localhost') !== -1;
+        this.setData({ showTestPush: isDev });
+
+        if (options && options.from === 'push') {
+            const matchId = options.match_id || options.matchId || '';
+            this.handlePushEntry(matchId);
+            return;
+        }
+
         this.loadChatHistory();
     },
 
@@ -42,6 +57,23 @@ Page({
             });
         }
     },
+    // ---- Push entry ----
+
+    handlePushEntry(matchId) {
+        this.setData({
+            fromPush: true,
+            chatComplete: true,
+            pushMatchId: matchId || '',
+            alreadyJoined: app.isJoinedQueue(),
+        });
+        this.addAiMessage('Opened from a Nira notification. You can jump to the match result page to continue.');
+    },
+
+    onViewMatchDetail() {
+        const suffix = this.data.pushMatchId ? '?from=push&match_id=' + this.data.pushMatchId : '?from=push';
+        wx.reLaunch({ url: '/pages/match/match' + suffix });
+    },
+
     // ---- Chat history ----
 
     loadChatHistory() {
@@ -207,6 +239,16 @@ Page({
         if (this.data.isJoiningQueue) return;
 
         this.setData({ isJoiningQueue: true, joinError: '' });
+
+        const subscribed = await app.sendSubscribeRequest();
+        if (subscribed) {
+            try {
+                await api.subscribeNotification(this.data.userId, app.getOpenId());
+            } catch (err) {
+                console.log('subscribeNotification failed:', err.message);
+            }
+        }
+
         try {
             const profile = app.getProfile();
             const result = await api.joinQueue(this.data.userId, profile);
@@ -234,5 +276,43 @@ Page({
     },
     onGoHome() {
         wx.reLaunch({ url: '/pages/index/index' });
+    },
+
+    // ---- Push test helpers ----
+
+    onTestPushInput(e) {
+        this.setData({ testPushOpenid: e.detail.value });
+    },
+
+    async onTestPushSend() {
+        const openid = this.data.testPushOpenid.trim();
+        if (!openid) {
+            wx.showToast({ title: 'openid required', icon: 'none' });
+            return;
+        }
+
+        this.setData({ testPushSending: true });
+        try {
+            const result = await api.testMatchPush(openid, {
+                matchId: 'test-' + Date.now(),
+                score: 88,
+                nickname: 'Nira partner',
+            });
+            this.setData({ testPushSending: false });
+            wx.showModal({
+                title: result.status === 'ok' ? 'Push sent' : 'Push mocked',
+                content: result.message || 'Done',
+                showCancel: false,
+            });
+        } catch (err) {
+            this.setData({ testPushSending: false });
+            wx.showModal({ title: 'Push failed', content: err.message || 'Network error', showCancel: false });
+        }
+    },
+
+    onSimulatePushEntry() {
+        this.setData({ messages: [] });
+        wx.removeStorageSync('nira_chat_messages');
+        this.handlePushEntry('sim-' + Date.now());
     }
 });

@@ -27,6 +27,9 @@ Page({
     timeoutTimer: null,
 
     onLoad(options) {
+        if (options && options.from === 'push') {
+            console.log('Opened match page from push:', options.match_id || '');
+        }
         this.setData({ matchId: (options && options.match_id) || '' });
         this.loadMatch();
     },

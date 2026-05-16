@@ -7,11 +7,11 @@
         <view id="scroll-bottom"></view>
     </scroll-view>
 
-    <view class="onboarding-hint" wx:if="{{onboardingHint}}">
+    <view class="onboarding-hint" wx:if="{{!fromPush && onboardingHint}}">
         <text>{{onboardingHint}}</text>
     </view>
 
-    <view class="input-bar safe-bottom" wx:if="{{!chatComplete}}">
+    <view class="input-bar safe-bottom" wx:if="{{!chatComplete && !fromPush}}">
         <input
             class="chat-input"
             value="{{inputValue}}"
@@ -31,7 +31,12 @@
         </button>
     </view>
 
-    <view class="match-cta safe-bottom" wx:if="{{chatComplete && alreadyJoined}}">
+    <view class="match-cta safe-bottom" wx:if="{{fromPush}}">
+        <button class="btn-primary btn-match" catchtap="onViewMatchDetail">View match result</button>
+        <button class="btn-secondary" style="margin-top: 12rpx;" bindtap="onGoHome">Back home</button>
+    </view>
+
+    <view class="match-cta safe-bottom" wx:if="{{!fromPush && chatComplete && alreadyJoined}}">
         <view class="queue-done-card">
             <text class="queue-done-icon">✓</text>
             <text class="queue-done-text">已加入本周匹配队列</text>
@@ -41,7 +46,7 @@
         <button class="btn-secondary" style="margin-top: 12rpx;" bindtap="onContinueChat">继续修改偏好</button>
     </view>
 
-    <view class="match-cta safe-bottom" wx:if="{{chatComplete && !alreadyJoined}}">
+    <view class="match-cta safe-bottom" wx:if="{{!fromPush && chatComplete && !alreadyJoined}}">
         <button class="btn-primary btn-match" catchtap="onJoinQueue" disabled="{{isJoiningQueue}}">
             {{isJoiningQueue ? '加入中...' : '加入本周匹配队列'}}
         </button>
@@ -51,4 +56,13 @@
             <text class="match-retry" catchtap="onJoinQueue">点击重试</text>
         </view>
     </view>
+    <view class="test-push-panel safe-bottom" wx:if="{{showTestPush && !fromPush && chatComplete && alreadyJoined}}">
+        <view class="test-push-header">Push test</view>
+        <input class="test-push-input" value="{{testPushOpenid}}" placeholder="openid" bindinput="onTestPushInput" />
+        <button class="test-push-btn" catchtap="onTestPushSend" disabled="{{testPushSending}}">
+            {{testPushSending ? 'Sending...' : 'Send test push'}}
+        </button>
+        <button class="test-push-btn-secondary" catchtap="onSimulatePushEntry">Simulate push entry</button>
+    </view>
+
 </view>

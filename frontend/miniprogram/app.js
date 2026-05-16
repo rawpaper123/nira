@@ -19,6 +19,7 @@ App({
         token: null,
         profileCompleted: false,
         joinedQueue: false,
+        templateId: '',
     },
 
     ensureUserId() {
@@ -277,6 +278,39 @@ App({
 
     getMatchHistory() {
         return wx.getStorageSync('matchHistory') || [];
+    },
+
+    // ---- Push Notification ----
+
+    sendSubscribeRequest(templateId) {
+        const tid = templateId || this.globalData.templateId;
+        if (!tid) {
+            console.warn('templateId is not configured; skip subscribe request');
+            return Promise.resolve(false);
+        }
+
+        return new Promise((resolve) => {
+            wx.requestSubscribeMessage({
+                tmplIds: [tid],
+                success(res) {
+                    resolve(res[tid] === 'accept');
+                },
+                fail(err) {
+                    console.warn('requestSubscribeMessage failed:', err);
+                    resolve(false);
+                },
+            });
+        });
+    },
+
+    handlePushEntry(query) {
+        const page = (query && query.page) || 'match';
+        const matchId = (query && (query.match_id || query.matchId)) || '';
+        if (page === 'chat') {
+            wx.reLaunch({ url: '/pages/chat/chat?from=push&match_id=' + matchId });
+            return;
+        }
+        wx.reLaunch({ url: '/pages/match/match?from=push&match_id=' + matchId });
     },
 
     generateUUID() {

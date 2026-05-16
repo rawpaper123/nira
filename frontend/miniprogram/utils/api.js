@@ -204,6 +204,46 @@ function healthCheck() {
 }
 
 /**
+ * POST /api/v1/push/subscribe
+ */
+function subscribeNotification(userId, openid) {
+    return request({
+        url: '/api/v1/push/subscribe',
+        method: 'POST',
+        loading: false,
+        data: { user_id: userId, openid: openid || '' },
+    });
+}
+
+/**
+ * POST /api/v1/push/match-result
+ */
+function sendMatchPush(userId, matchId) {
+    return request({
+        url: '/api/v1/push/match-result',
+        method: 'POST',
+        loading: false,
+        data: { user_id: userId, match_id: matchId },
+    });
+}
+
+/**
+ * POST /api/v1/push/test-match-result
+ */
+function testMatchPush(openid, options) {
+    return request({
+        url: '/api/v1/push/test-match-result',
+        method: 'POST',
+        loadingText: 'Sending test push...',
+        data: {
+            openid: openid || '',
+            match_id: (options && options.matchId) || 'test-match-001',
+            score: (options && options.score) || 88,
+            nickname: (options && options.nickname) || 'Nira partner',
+        },
+    });
+}
+/**
  * POST /api/v1/match/accept
  * 接受匹配
  */
@@ -310,6 +350,7 @@ module.exports = {
     profileChat,
     getProfile,
     joinQueue,
+    subscribeNotification,
     weeklyMatch,
     runWeeklyMatch,
     triggerWeeklyMatch,
@@ -320,6 +361,8 @@ module.exports = {
     confirmSchedule,
     testMatch,
     healthCheck,
+    sendMatchPush,
+    testMatchPush,
     acceptMatch,
     rejectMatch,
     getGroupInfo,
