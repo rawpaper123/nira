@@ -5,13 +5,46 @@
         "pages/chat/chat",
         "pages/match/match",
         "pages/schedule/schedule",
-        "pages/group/group"
+        "pages/group/group",
+        "pages/me/me"
     ],
     "window": {
         "navigationBarTitleText": "NIRA",
         "navigationBarBackgroundColor": "#000000",
         "navigationBarTextStyle": "white",
         "backgroundColor": "#FFFFFF"
+    },
+    "tabBar": {
+        "color": "#999999",
+        "selectedColor": "#000000",
+        "backgroundColor": "#FFFFFF",
+        "borderStyle": "black",
+        "list": [
+            {
+                "pagePath": "pages/index/index",
+                "text": "首页",
+                "iconPath": "images/home.png",
+                "selectedIconPath": "images/home_active.png"
+            },
+            {
+                "pagePath": "pages/chat/chat",
+                "text": "聊天",
+                "iconPath": "images/chat.png",
+                "selectedIconPath": "images/chat_active.png"
+            },
+            {
+                "pagePath": "pages/match/match",
+                "text": "匹配",
+                "iconPath": "images/match.png",
+                "selectedIconPath": "images/match_active.png"
+            },
+            {
+                "pagePath": "pages/me/me",
+                "text": "我的",
+                "iconPath": "images/me.png",
+                "selectedIconPath": "images/me_active.png"
+            }
+        ]
     },
     "sitemapLocation": "sitemap.json",
     "style": "v2"
