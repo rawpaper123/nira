@@ -1,3 +1,167 @@
+## 2026-05-17 Push Notification Baseline Milestone
+
+### Git Safety
+
+- Work branch: `work/push-notification-baseline`
+- Checkpoint commit before this milestone: `27c95589941f8e75d2450271ca058bee3a3fe824`
+- No push was performed.
+- Staged area was checked before and after each commit.
+- `.codex`, package files, poster/COS assets, broad LLM provider changes, and generated static assets were not committed.
+
+### Review Scope
+
+Push-related backend files reviewed:
+
+- `backend/app/main.py`
+- `backend/app/routers/push.py`
+- `backend/app/services/push_service.py`
+- `backend/app/services/match_service.py`
+- `backend/app/core/config.py`
+- `backend/.env.example`
+- existing `PushSubscription` model and migration state
+
+Push-related frontend files reviewed:
+
+- `frontend/miniprogram/app.js`
+- `frontend/miniprogram/utils/api.js`
+- `frontend/miniprogram/pages/chat/chat.js`
+- `frontend/miniprogram/pages/chat/chat.wxml`
+- `frontend/miniprogram/pages/chat/chat.wxss`
+- `frontend/miniprogram/pages/match/match.js`
+
+Explicitly not included:
+
+- poster agent/image/COS/static poster assets
+- `frontend/miniprogram/images/*`
+- `frontend/miniprogram/pages/me/*`
+- `package.json` / `package-lock.json`
+- broad LLM provider and agent refactors
+- `CLAUDE.md`
+- `NIRA_PROJECT_CONTEXT.md`
+
+### Push Backend Design
+
+- `backend/app/main.py` now registers `push.router`.
+- `backend/app/routers/push.py` exposes development-safe push endpoints.
+- `backend/app/services/push_service.py` stores subscriptions in a local JSON file fallback at `backend/app/data/subscriptions.json`.
+- Real WeChat subscription-message calls are attempted only when `openid`, `WX_APPID`, `WX_SECRET`, and `WX_TEMPLATE_ID_MATCH` are available.
+- Missing WeChat credentials do not block local demo; development endpoints return `mocked`.
+- `backend/app/services/match_service.py` can call push notification after non-development weekly match generation, and catches failures so matching is not blocked.
+- Existing `PushSubscription` model and Alembic migration already exist; this milestone kept the runtime service on JSON fallback and did not add a migration.
+
+Backend endpoints:
+
+- `POST /api/v1/push/subscribe`
+- `GET /api/v1/push/subscription/{user_id}`
+- `GET /api/v1/push/subscribers`
+- `POST /api/v1/push/match-result`
+- `POST /api/v1/push/test-match-result`
+- `POST /api/v1/push/test`
+
+### Miniprogram Push Entry
+
+- `app.js` adds `sendSubscribeRequest()` and `handlePushEntry()`.
+- `api.js` adds `subscribeNotification()`, `sendMatchPush()`, and `testMatchPush()`.
+- `chat` page asks for subscription when joining queue; if no template id is configured, it safely skips and continues joining.
+- `chat` page has a local development push test panel after profile is ready and the user is queued.
+- `chat` push entry avoids poster-specific rendering in this committed baseline and routes users to the match result page.
+- `match` page logs when opened from push and continues using existing match-result fallback behavior.
+
+### Commits Created
+
+- `491b3831044a4b52dd56d875bf7385c867fc91df` - `feat: add backend push subscription baseline`
+- `f60b7080d28cf8615b59f056f2f70c2245be7985` - `feat: connect miniprogram push entry`
+
+### Verification Results
+
+Backend:
+
+```bash
+cd backend
+.venv\Scripts\python.exe -m compileall app
+curl http://localhost:8000/health
+```
+
+Result: passed. `/health` returned:
+
+```json
+{"status":"ok","app":"Nira","env":"development"}
+```
+
+Frontend:
+
+```bash
+node --check frontend\miniprogram\app.js
+node --check frontend\miniprogram\utils\api.js
+node --check frontend\miniprogram\pages\chat\chat.js
+node --check frontend\miniprogram\pages\index\index.js
+node --check frontend\miniprogram\pages\match\match.js
+```
+
+Result: passed.
+
+API smoke:
+
+```json
+{
+  "health": "ok",
+  "subscribers_initial": {"status": "ok", "total": 0},
+  "subscribe": {"status": "ok", "message": "subscription recorded"},
+  "subscription_read": {"status": "ok", "subscribed": true},
+  "match_result_without_openid": {"status": "mocked"},
+  "test_match_result_without_openid": {"status": "mocked"},
+  "test_without_credentials": {"status": "mocked"}
+}
+```
+
+No real WeChat production API call was required for the smoke path.
+
+### Still Uncommitted
+
+Remaining working-tree changes are intentionally uncommitted because they are outside this push baseline or still mixed:
+
+- broad LLM/provider changes in `backend/app/agents/*`, `backend/app/core/config.py`, `backend/.env.example`, and `backend/requirements.txt`
+- poster/COS files: `poster_agent.py`, `poster_image_service.py`, `cos_upload.py`, `backend/app/static/*`
+- miniprogram visual/tabBar/me/images changes
+- package files
+- `CLAUDE.md`
+- `NIRA_PROJECT_CONTEXT.md`
+- residual mixed hunks in `app.js`, `api.js`, `chat/*`, `match.js`, and index styling files
+- generated smoke data under `backend/app/data/`, not committed
+
+### Rollback
+
+Rollback the entire milestone to the checkpoint:
+
+```bash
+git reset --hard 27c95589941f8e75d2450271ca058bee3a3fe824
+```
+
+Remove uncommitted/generated files after reviewing them:
+
+```bash
+git clean -fd
+```
+
+Only unstage files:
+
+```bash
+git restore --staged <file>
+```
+
+Only discard a specific uncommitted file:
+
+```bash
+git restore <file>
+```
+
+### Next Suggestions
+
+1. Decide whether push subscriptions should stay JSON fallback for MVP or move to the existing `push_subscriptions` DB table.
+2. Add a small backend test for `/api/v1/push/subscribe`, `/subscription/{user_id}`, and development `mocked` push responses.
+3. Configure a real `WX_TEMPLATE_ID_MATCH` only when ready for a device test, then verify on a logged-in WeChat developer account.
+4. Keep poster/COS and LLM provider commits separate from push.
+
 ## 2026-05-16 Autonomous Commit Split
 
 ### Scope
