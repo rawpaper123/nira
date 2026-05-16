@@ -27,6 +27,9 @@ dashscope==1.20.12
 # Vector Database (需要 C++ 编译器，按需安装)
 # chromadb==0.5.7
 
+# OpenAI-compatible LLM providers
+openai>=1.30.0
+
 # Cloud Storage (Tencent COS)
 cos-python-sdk-v5==1.9.30
 
