@@ -8,19 +8,22 @@ Page({
     data: {
         messages: [],
         inputValue: '',
-        inputPlaceholder: '你的小名或昵称...',
+        inputPlaceholder: '随便说说你自己，Nira 会边聊边整理',
+        onboardingHint: '再聊两句，Nira 就能帮你加入本周匹配',
         isAiTyping: false,
         chatComplete: false,
         chatHistory: '',
         userId: '',
-        step: 0,
+        isJoiningQueue: false,
+        joinError: '',
+        alreadyJoined: false,
         preferredName: '',
-        preferredStyle: '',
-        preferredGender: 'any',
+        preferredGender: '',
         preferredType: '',
+        conversationId: '',
     },
 
-    onLoad() {
+    onLoad(options) {
         this.setData({ userId: app.getUserId() });
 
         if (!app.isLoggedIn()) {
@@ -28,45 +31,60 @@ Page({
             this.addAiMessage('先登录一下下，登录完我就继续帮你整理档案～');
             return;
         }
-
         this.loadChatHistory();
     },
 
     onShow() {
-        this.setData({ userId: app.getUserId() });
+        if (app.isLoggedIn()) {
+            this.setData({
+                userId: app.getUserId(),
+                alreadyJoined: app.isJoinedQueue(),
+            });
+        }
     },
-
-    // ---- 聊天记录持久化 ----
+    // ---- Chat history ----
 
     loadChatHistory() {
-        const saved = wx.getStorageSync(MSG_STORAGE);
+        const saved = (wx.getStorageSync(MSG_STORAGE) || []).map((message) => ({
+            ...message,
+            text: message.text || '',
+            imageUrl: message.imageUrl || '',
+        }));
         const profile = app.getProfile();
         const savedName = wx.getStorageSync('nira_preferred_name') || (profile && profile.preferred_name) || '';
 
         if (saved && saved.length > 0) {
             const chatComplete = app.isProfileComplete();
+            const alreadyJoined = app.isJoinedQueue();
             this.setData({
                 messages: saved,
                 chatHistory: wx.getStorageSync(HISTORY_STORAGE) || '',
                 chatComplete,
+                alreadyJoined,
                 preferredName: savedName,
-                step: chatComplete ? 6 : 0,
-                inputPlaceholder: chatComplete ? '' : '继续说说你的偏好...',
+                conversationId: wx.getStorageSync('nira_profile_conversation_id') || '',
+                inputPlaceholder: '还想补充或修改什么，直接说就行',
+                onboardingHint: chatComplete ? '档案信息够用了，也可以继续修改偏好' : '再聊两句，Nira 就能帮你加入本周匹配',
             });
         } else if (app.isProfileComplete()) {
             this.setData({
                 chatComplete: true,
+                alreadyJoined: app.isJoinedQueue(),
                 preferredName: savedName,
                 inputPlaceholder: '',
             });
             this.addAiMessage(
                 `${savedName || '朋友'}，你的档案已经准备好了。\n\n` +
-                '回首页就能看到当前状态。'
+                (app.isJoinedQueue() ? '你已经在本周匹配队列里，回首页看看状态就好。' : '现在可以直接加入本周匹配队列。')
             );
         } else {
+            this.setData({
+                conversationId: wx.getStorageSync('nira_profile_conversation_id') || '',
+                inputPlaceholder: '随便说说你自己，Nira 会边聊边整理',
+                onboardingHint: '再聊两句，Nira 就能帮你加入本周匹配',
+            });
             this.addAiMessage(
-                '嗨！我是 Nira～\n\n' +
-                '先说说你怎么称呼吧？朋友们平时叫你啥？'
+                '嗨，我是 Nira。你可以随便说说自己，喜欢的活动、想认识什么样的人、什么时候方便都行。\n\n我会边聊边帮你整理，不用按表格填。'
             );
         }
     },
@@ -115,169 +133,106 @@ Page({
 
     onSend() {
         const text = this.data.inputValue.trim();
-        if (!text || this.data.isAiTyping || this.data.chatComplete) return;
+        if (!text || this.data.isAiTyping) return;
 
         this.addUserMessage(text);
         this.setData({ inputValue: '' });
-
-        const step = this.data.step + 1;
-        this.setData({ step });
-
-        if (step === 1) {
-            this.handleNicknameReply(text);
-        } else if (step === 4) {
-            this.handleGenderTypeReply(text);
-        } else if (step === 5) {
-            this.handleStyleReply(text);
-        } else if (step >= 6) {
-            this.buildProfile();
-        } else {
-            this.followUp(step);
-        }
+        this.sendProfileChat(text);
     },
 
-    handleNicknameReply(name) {
-        this.setData({
-            preferredName: name,
-            inputPlaceholder: '说说你喜欢什么...',
-        });
-        wx.setStorageSync('nira_preferred_name', name);
-
-        this.setData({ isAiTyping: true });
-        setTimeout(() => {
-            this.setData({ isAiTyping: false });
-            this.addAiMessage(
-                `${name}是吧，记住了！\n\n` +
-                '聊聊你喜欢啥呗？周末一般怎么过，平时有什么爱好，随便说～'
-            );
-        }, 600 + Math.random() * 400);
-    },
-
-    followUp(step) {
-        const name = this.data.preferredName;
-        const responses = [
-            '',
-            `哦？还有别的吗${name ? ' ' + name : ''}？户外、桌游、看展、做饭，有没有感兴趣的？`,
-            '了解！那周末一般啥时候比较空呀？上午下午晚上都说说～',
-            '最后两个小问题：这次想遇到什么样的人？比如男生 / 女生 / 都可以，或者直接描述你喜欢的性格和相处感。',
-        ];
-        this.setData({ isAiTyping: true });
-        setTimeout(() => {
-            this.setData({ isAiTyping: false });
-            this.addAiMessage(responses[step] || '嗯嗯，还有啥想补充的不？');
-        }, 800 + Math.random() * 600);
-    },
-
-    handleGenderTypeReply(text) {
-        const preferredGender = this.detectPreferredGender(text);
-        this.setData({ preferredGender, preferredType: text });
-        wx.setStorageSync('nira_preferred_gender', preferredGender);
-        wx.setStorageSync('nira_preferred_type', text);
-
-        this.setData({ isAiTyping: true });
-        setTimeout(() => {
-            this.setData({ isAiTyping: false });
-            this.addAiMessage(
-                '懂了懂了。\n\n' +
-                '再问一个：你平时审美偏什么风格？比如 Y2K、动漫风、极简高级感、氛围感、治愈系、复古，或者你自己描述也行。'
-            );
-        }, 600 + Math.random() * 400);
-    },
-
-    handleStyleReply(text) {
-        this.setData({ preferredStyle: text });
-        wx.setStorageSync('nira_preferred_style', text);
-
-        this.setData({ isAiTyping: true });
-        setTimeout(() => {
-            this.setData({ isAiTyping: false });
-            this.addAiMessage(`${text}是吧，品味不错。\n\n我这就给你整理档案，稍等一下哈。`);
-            setTimeout(() => {
-                this.buildProfile();
-            }, 600);
-        }, 600 + Math.random() * 400);
-    },
-
-    detectPreferredGender(text) {
-        if (text.indexOf('男') !== -1) return 'male';
-        if (text.indexOf('女') !== -1) return 'female';
-        return 'any';
-    },
-
-    // ---- 画像构建 ----
-
-    async buildProfile() {
+    async sendProfileChat(text) {
         if (!app.isLoggedIn()) {
             wx.navigateTo({ url: '/pages/login/phone/index' });
             return;
         }
 
-        this.setData({ isAiTyping: true });
+        const conversationId = this.data.conversationId || wx.getStorageSync('nira_profile_conversation_id') || `local-${Date.now()}`;
+        wx.setStorageSync('nira_profile_conversation_id', conversationId);
 
-        const name = this.data.preferredName || wx.getStorageSync('nira_preferred_name') || '朋友';
-        const style = this.data.preferredStyle || wx.getStorageSync('nira_preferred_style') || '';
-        const preferredGender = this.data.preferredGender || wx.getStorageSync('nira_preferred_gender') || 'any';
-        const preferredType = this.data.preferredType || wx.getStorageSync('nira_preferred_type') || '';
-
-        const profileInput = [
-            `我的昵称/小名是：${name}`,
-            style ? `我的审美/视觉风格偏好是：${style}` : '',
-            preferredGender ? `我偏好的连接对象性别：${preferredGender}` : '',
-            preferredType ? `我想要的搭子/偏好类型：${preferredType}` : '',
-            '',
-            this.data.chatHistory,
-        ].filter(Boolean).join('\n');
+        this.setData({ isAiTyping: true, conversationId });
 
         try {
-            const profile = await api.buildProfile(this.data.userId, profileInput);
-            if (!profile.preferred_name) profile.preferred_name = name;
-            if (!profile.preferred_style) profile.preferred_style = style;
-            if (!profile.preferred_gender) profile.preferred_gender = preferredGender;
-            if (!profile.preferred_type) profile.preferred_type = preferredType;
+            const result = await api.profileChat(this.data.userId || app.getUserId(), text, conversationId);
+            const profile = result.profile || null;
+            const completion = result.completion || {};
+            const patch = result.profile_patch || {};
 
-            this.finishProfile(profile, false);
+            if (profile) {
+                app.globalData.profile = profile;
+                wx.setStorageSync('profile', profile);
+                if (completion.is_ready) {
+                    app.setProfile(profile);
+                } else {
+                    app.globalData.profileCompleted = false;
+                    wx.setStorageSync('profileCompleted', false);
+                }
+                wx.setStorageSync('profilePatch', patch);
+                if (profile.preferred_name) {
+                    wx.setStorageSync('nira_preferred_name', profile.preferred_name);
+                    this.setData({ preferredName: profile.preferred_name });
+                }
+                this.setData({
+                    preferredGender: profile.preferred_gender || '',
+                    preferredType: profile.preferred_type || '',
+                });
+            }
+
+            this.setData({
+                isAiTyping: false,
+                chatComplete: !!completion.is_ready,
+                alreadyJoined: app.isJoinedQueue(),
+                inputPlaceholder: '还想补充或修改什么，直接说就行',
+                onboardingHint: completion.is_ready
+                    ? '信息够用了，可以加入本周匹配；想改偏好也可以继续聊'
+                    : '再聊两句，Nira 就能帮你加入本周匹配',
+            });
+            this.addAiMessage(result.reply || '我记下了。你可以继续补充，也可以先加入本周匹配。');
         } catch (err) {
-            const localProfile = {
-                preferred_name: name,
-                interests: ['咖啡探店', '城市漫步'],
-                activity_types: ['coffee_chat', 'city_walk'],
-                personality_tags: ['chill', 'social'],
-                bio: '有点会玩，也有点会生活',
-                preferred_style: style || '极简高级感',
-                preferred_gender: preferredGender,
-                preferred_type: preferredType,
-                availability: { weekdays: ['evening'], weekends: ['afternoon', 'evening'] },
-                photo_urls: [],
-                photo_status: 'pending',
-            };
-            this.finishProfile(localProfile, true);
+            this.setData({ isAiTyping: false });
+            this.addAiMessage('这条我刚刚没连上后端，先别急。你可以再发一次，我会继续帮你整理偏好。');
         }
     },
 
-    finishProfile(profile, isLocalMode) {
-        const name = profile.preferred_name || this.data.preferredName || '朋友';
-        const interests = (profile.interests || []).join('、');
-        const activities = (profile.activity_types || []).join('、');
-        const tags = (profile.personality_tags || []).join('、');
-        const style = profile.preferred_style || '';
-        const preferredType = profile.preferred_type || '';
-
-        this.setData({ isAiTyping: false });
-        this.addAiMessage(
-            `${name}，你的档案搞定啦${isLocalMode ? '（本地模式）' : ''}！看看准不准～\n\n` +
-            `兴趣：${interests}\n` +
-            `活动：${activities}\n` +
-            `性格：${tags}\n` +
-            (style ? `风格：${style}\n` : '') +
-            (preferredType ? `理想相处感：${preferredType}\n` : '') +
-            '\n回首页就能看到当前状态。'
-        );
-
-        app.setProfile(profile);
-        this.setData({ chatComplete: true, inputPlaceholder: '' });
+    onContinueChat() {
+        this.setData({
+            chatComplete: false,
+            inputPlaceholder: '想改名字、活动、时间或偏好都可以直接说',
+            onboardingHint: '继续说就行，Nira 会更新你的偏好',
+        });
     },
 
+    // ---- Join match queue ----
+
+    async onJoinQueue() {
+        if (this.data.isJoiningQueue) return;
+
+        this.setData({ isJoiningQueue: true, joinError: '' });
+        try {
+            const profile = app.getProfile();
+            const result = await api.joinQueue(this.data.userId, profile);
+            if (result.status === 'profile_required') {
+                this.setData({ isJoiningQueue: false, joinError: result.message || '请先完成画像' });
+                return;
+            }
+            this.onQueueJoined();
+        } catch (err) {
+            console.log('joinQueue API failed, local fallback:', err.message);
+            this.onQueueJoined();
+        }
+    },
+
+    onQueueJoined() {
+        app.joinQueue();
+        const name = this.data.preferredName;
+        this.setData({ isJoiningQueue: false, alreadyJoined: true });
+
+        this.addAiMessage(
+            `${name}，搞定！已经把你放进这周的匹配队列了 🎉\n\n` +
+            '下周三 19:00 会出匹配结果，到时候消息会通知你～\n\n' +
+            '先回首页等着吧，有消息我第一个告诉你！'
+        );
+    },
     onGoHome() {
         wx.reLaunch({ url: '/pages/index/index' });
-    },
+    }
 });

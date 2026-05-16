@@ -80,6 +80,12 @@ App({
             this.globalData.openid = cached;
             return;
         }
+        if ((this.globalData.apiBase || '').indexOf('localhost') !== -1) {
+            const devOpenid = 'dev_local_openid';
+            this.globalData.openid = devOpenid;
+            wx.setStorageSync('nira_openid', devOpenid);
+            return;
+        }
 
         const api = require('./utils/api');
         wx.login({
@@ -137,6 +143,8 @@ App({
         wx.removeStorageSync('joinedQueue');
         wx.removeStorageSync('nira_chat_messages');
         wx.removeStorageSync('nira_chat_history');
+        wx.removeStorageSync('nira_profile_conversation_id');
+        wx.removeStorageSync('profilePatch');
     },
 
     // ---- User Info ----

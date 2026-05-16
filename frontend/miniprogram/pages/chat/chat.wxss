@@ -7,7 +7,7 @@
 
 .chat-list {
     flex: 1;
-    padding: 24rpx 0 24rpx;
+    padding: 32rpx 0 32rpx;
 }
 
 /* Input Bar */
@@ -19,7 +19,7 @@
     display: flex;
     align-items: center;
     gap: 16rpx;
-    padding: 16rpx 24rpx;
+    padding: 20rpx 24rpx;
     background: #FFFFFF;
     border-top: 2rpx solid #000000;
     z-index: 20;
@@ -27,27 +27,42 @@
 
 .chat-input {
     flex: 1;
-    height: 72rpx;
+    height: 80rpx;
     background: #F5F5F5;
     border: none;
-    padding: 0 28rpx;
+    padding: 0 32rpx;
     font-size: 28rpx;
     color: #000000;
 }
 
 .input-placeholder { color: #CCCCCC; }
 
+.onboarding-hint {
+    position: fixed;
+    left: 24rpx;
+    right: 24rpx;
+    bottom: 116rpx;
+    z-index: 18;
+    padding: 14rpx 20rpx;
+    background: #FFFFFF;
+    border: 2rpx solid #000000;
+    font-size: 22rpx;
+    color: #666666;
+    line-height: 1.4;
+    text-align: center;
+}
+
 .send-btn {
     background: #000000;
     color: #FFFFFF;
-    height: 72rpx;
-    line-height: 72rpx;
-    padding: 0 32rpx;
+    height: 80rpx;
+    line-height: 80rpx;
+    padding: 0 36rpx;
     font-size: 24rpx;
-    font-weight: 600;
-    letter-spacing: 2rpx;
+    font-weight: 700;
+    letter-spacing: 4rpx;
     border: none;
-    min-width: 100rpx;
+    min-width: 108rpx;
 }
 
 .send-btn::after { border: none; }
@@ -63,7 +78,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 20rpx 32rpx;
+    padding: 24rpx 32rpx;
     background: #FFFFFF;
     border-top: 2rpx solid #000000;
     z-index: 30;
@@ -71,10 +86,10 @@
 
 .btn-match {
     width: 100%;
-    height: 88rpx;
-    line-height: 88rpx;
+    height: 96rpx;
+    line-height: 96rpx;
     font-size: 26rpx;
-    letter-spacing: 4rpx;
+    letter-spacing: 6rpx;
 }
 
 .retry-area {
@@ -84,14 +99,15 @@
     padding: 16rpx 0;
 }
 
-.match-error { font-size: 24rpx; color: #999999; }
+.match-error { font-size: 24rpx; color: #999999; letter-spacing: 1rpx; }
 
 .match-retry {
     font-size: 26rpx;
     color: #000000;
     margin-top: 8rpx;
     text-decoration: underline;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 2rpx;
 }
 
 /* Queue Done Card */
@@ -99,26 +115,27 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 32rpx 24rpx;
+    padding: 48rpx 24rpx;
     border: 2rpx solid #000000;
-    border-radius: 12rpx;
 }
 
 .queue-done-icon {
-    font-size: 40rpx;
+    font-size: 48rpx;
     color: #000000;
-    margin-bottom: 12rpx;
+    margin-bottom: 16rpx;
+    font-weight: 900;
 }
 
 .queue-done-text {
     font-size: 28rpx;
-    font-weight: 700;
+    font-weight: 800;
     color: #000000;
-    letter-spacing: 2rpx;
+    letter-spacing: 4rpx;
 }
 
 .queue-done-hint {
     font-size: 22rpx;
     color: #999999;
-    margin-top: 8rpx;
+    margin-top: 12rpx;
+    letter-spacing: 2rpx;
 }

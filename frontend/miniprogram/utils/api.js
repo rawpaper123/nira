@@ -29,6 +29,7 @@ function request(options) {
             method: options.method || 'GET',
             data: options.data || {},
             header: { ...header, ...options.header },
+            timeout: options.timeout || 10000,
             success(res) {
                 if (res.statusCode >= 200 && res.statusCode < 300) {
                     resolve(res.data);
@@ -74,6 +75,23 @@ function getProfile(userId) {
         method: 'GET',
         loading: false,
         silent: true,
+    });
+}
+
+/**
+ * POST /api/v1/profile/chat
+ * Dynamic onboarding chat: backend returns reply + profile_patch + completion.
+ */
+function profileChat(userId, message, conversationId) {
+    return request({
+        url: '/api/v1/profile/chat',
+        method: 'POST',
+        loading: false,
+        data: {
+            user_id: userId,
+            message: message,
+            conversation_id: conversationId || '',
+        },
     });
 }
 
@@ -189,6 +207,7 @@ module.exports = {
     sendVerificationCode,
     verifyCodeAndLogin,
     buildProfile,
+    profileChat,
     getProfile,
     joinQueue,
     weeklyMatch,
