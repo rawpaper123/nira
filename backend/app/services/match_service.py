@@ -5,6 +5,7 @@ from uuid import UUID, uuid4
 from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.agents.poster_agent import build_poster_card
 from app.agents.compatibility_agent import evaluate_compatibility
 from app.agents.simulation_agent import simulate_interaction
 from app.core.config import settings
@@ -334,6 +335,12 @@ def _build_mock_match_result(
         compatibility.get("reasoning", "你们的兴趣和时间节奏比较搭。"),
         "本地 mock 匹配：用于验证小程序匹配结果页流程。",
     ]
+    poster = build_poster_card(
+        profile_a=_profile_to_dict(profile_a),
+        profile_b=_profile_to_dict(profile_b),
+        compatibility=compatibility,
+        activity_label=activity,
+    )
     return {
         "matches": [
             {
@@ -348,6 +355,8 @@ def _build_mock_match_result(
                 "compatibility_score": round(score * 100),
                 "reasons": reasons,
                 "suggested_activity": activity,
+                "poster": poster,
+                "poster_copy": poster.get("copy", ""),
                 "status": "matched",
             }
         ],
@@ -369,6 +378,18 @@ def _suggest_activity(profile: UserProfile) -> str:
     if "board_game" in activities:
         return "桌游局"
     return "咖啡聊天"
+
+
+def _profile_to_dict(profile: UserProfile | None) -> dict:
+    if not profile:
+        return {}
+    return {
+        "interests": profile.interests or [],
+        "activity_types": profile.activity_types or [],
+        "personality_tags": profile.personality_tags or [],
+        "bio": profile.bio or "",
+        "availability": profile.availability or {},
+    }
 
 
 def _profile_is_complete(profile: dict | None) -> bool:

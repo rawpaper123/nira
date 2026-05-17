@@ -11,6 +11,7 @@ from app.schemas.schedule import ScheduleArrangeRequest, ScheduleArrangeResponse
 from app.services.schedule_service import arrange_activity
 from app.services.match_service import register_group_info
 from app.agents.scheduler_agent import generate_activity_plan
+from app.agents.poster_agent import build_poster_card
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +68,7 @@ class ArrangeSimpleResponse(BaseModel):
     suggested_location: str = ""
     reason: str = ""
     tips: list[str] = []
+    poster: dict | None = None
     poster_copy: str = ""
     group_welcome: str = ""
     status: str = "planned"
@@ -141,6 +143,7 @@ async def arrange_simple(req: ArrangeSimpleRequest):
         suggested_location=plan.get("suggested_location") or plan.get("location", ""),
         reason=plan.get("reason", ""),
         tips=plan.get("tips", []),
+        poster=result.get("poster"),
         poster_copy=result.get("poster_copy", ""),
         group_welcome=result.get("group_welcome", ""),
         status="planned",
@@ -243,9 +246,18 @@ def _mock_activity_plan(profile_a: dict, profile_b: dict, compatibility: dict, c
             "如果感觉不错，再顺手加一站书店或小吃店",
         ],
     }
+    poster = build_poster_card(
+        profile_a=profile_a,
+        profile_b=profile_b,
+        plan=plan,
+        compatibility=compatibility,
+        activity_label=label,
+        city=city,
+    )
     return {
         "plan": plan,
-        "poster_copy": f"{label}走起，轻松见一面，不尬聊也能有话题。",
+        "poster": poster,
+        "poster_copy": poster.get("copy", f"{label}走起，轻松见一面，不尬聊也能有话题。"),
         "group_welcome": f"来来来，{name_a} 和 {name_b} 先认识一下～这次给你们安排的是{label}，低压力开局，刚刚好。",
     }
 

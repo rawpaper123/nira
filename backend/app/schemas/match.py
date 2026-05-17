@@ -45,6 +45,8 @@ class MatchResult(BaseModel):
     compatibility_score: int | None = None
     reasons: list[str] = Field(default_factory=list)
     suggested_activity: str | None = None
+    poster: dict | None = None
+    poster_copy: str = ""
     status: str = "matched"
 
 

@@ -115,6 +115,8 @@ def _weekly_response_from_result(result: dict) -> WeeklyMatchResponse:
         compatibility_score=match.get("compatibility_score"),
         reasons=match.get("reasons", []),
         suggested_activity=match.get("suggested_activity"),
+        poster=match.get("poster"),
+        poster_copy=match.get("poster_copy", ""),
         status=match.get("status", "matched"),
     )
 
