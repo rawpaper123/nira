@@ -57,10 +57,15 @@
         </view>
 
         <!-- Poster -->
-        <view class="card" wx:if="{{posterCopy}}">
+        <view class="card" wx:if="{{poster || posterCopy}}">
             <text class="section-title">活动海报</text>
             <view class="poster-preview">
-                <text class="poster-text">{{posterCopy}}</text>
+                <text class="poster-title" wx:if="{{poster && poster.title}}">{{poster.title}}</text>
+                <text class="poster-subtitle" wx:if="{{poster && poster.subtitle}}">{{poster.subtitle}}</text>
+                <text class="poster-text">{{poster.copy || posterCopy}}</text>
+                <view class="poster-tags" wx:if="{{poster && poster.tags && poster.tags.length}}">
+                    <text class="poster-tag" wx:for="{{poster.tags}}" wx:key="index">{{item}}</text>
+                </view>
             </view>
         </view>
 

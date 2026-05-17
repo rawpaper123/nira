@@ -55,6 +55,19 @@
             <text class="reasoning-text" wx:if="{{matchData.suggested_activity}}">建议活动：{{matchData.suggested_activity}}</text>
         </view>
 
+        <!-- Poster Card -->
+        <view class="card poster-card" wx:if="{{poster}}">
+            <text class="section-title">Nira 小卡片</text>
+            <view class="poster-frame">
+                <text class="poster-title">{{poster.title}}</text>
+                <text class="poster-subtitle">{{poster.subtitle}}</text>
+                <text class="poster-copy">{{poster.copy}}</text>
+                <view class="poster-tags" wx:if="{{poster.tags && poster.tags.length}}">
+                    <text class="poster-tag" wx:for="{{poster.tags}}" wx:key="index">{{item}}</text>
+                </view>
+            </view>
+        </view>
+
         <!-- Why Matched -->
         <view class="card">
             <text class="section-title">为什么匹配你们</text>

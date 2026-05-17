@@ -12,6 +12,7 @@ Page({
         score: 0,
         reasoning: '',
         simulationScenes: [],
+        poster: null,
         simulationExpanded: false,
         weekNumber: 0,
         compatDimensions: {
@@ -95,12 +96,14 @@ Page({
 
     applyMatchData(matchData) {
         const compat = matchData.compatibility || {};
+        const poster = this.normalizePoster(matchData);
         this.setData({
             loading: false,
             matchData,
             score: Math.round((matchData.score || 0) * 100),
             reasoning: compat.reasoning || '',
             simulationScenes: matchData.simulation || [],
+            poster,
             weekNumber: matchData.week_number || 0,
             matchStatus: 'ready',
             compatDimensions: {
@@ -125,12 +128,14 @@ Page({
         }
 
         const compat = match.compatibility || {};
+        const poster = this.normalizePoster(match);
         this.setData({
             loading: false,
             matchData: match,
             score: Math.round((match.score || 0) * 100),
             reasoning: compat.reasoning || '',
             simulationScenes: match.simulation || [],
+            poster,
             weekNumber: result.week_number || 0,
             matchStatus: 'ready',
             compatDimensions: {
@@ -178,6 +183,23 @@ Page({
         });
 
         app.setCurrentMatch(matchData);
+    },
+
+    normalizePoster(match) {
+        if (!match) return null;
+        if (match.poster && match.poster.copy) return match.poster;
+        if (match.poster_copy) {
+            return {
+                status: 'mocked',
+                type: 'text_card',
+                title: '这次见面适合轻松一点',
+                subtitle: match.suggested_activity || '低压力活动搭子',
+                copy: match.poster_copy,
+                style: 'black_white_minimal',
+                tags: match.suggested_activity ? [match.suggested_activity] : [],
+            };
+        }
+        return null;
     },
 
     toggleSimulation() {

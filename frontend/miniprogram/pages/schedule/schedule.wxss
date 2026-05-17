@@ -93,6 +93,35 @@
     line-height: 1.7;
     letter-spacing: 2rpx;
 }
+.poster-title {
+    display: block;
+    font-size: 34rpx;
+    font-weight: 900;
+    color: #000000;
+    letter-spacing: 2rpx;
+    margin-bottom: 12rpx;
+}
+.poster-subtitle {
+    display: block;
+    font-size: 22rpx;
+    color: #666666;
+    letter-spacing: 2rpx;
+    margin-bottom: 20rpx;
+}
+.poster-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12rpx;
+    margin-top: 24rpx;
+}
+.poster-tag {
+    border: 2rpx solid #000000;
+    padding: 4rpx 16rpx;
+    font-size: 20rpx;
+    color: #000000;
+    letter-spacing: 2rpx;
+}
 
 /* Welcome */
 .welcome-text {
