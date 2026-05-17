@@ -13,7 +13,7 @@ const steps = [
     title: "周三惊喜推送",
     description:
       "周三晚 7 点查看微信消息，我们会推送一位精选匹配对象，并为你安排好约会！",
-    image: "/images/howitworks/how_it_works_2.webp",
+    image: "/images/howitworks/nira-wechat-notification-v1.png",
     numImage: "/images/howitworks/number_2.webp",
   },
   {
