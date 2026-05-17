@@ -1,3 +1,114 @@
+## 2026-05-17 Poster Local Fallback Baseline
+
+### Git Safety
+
+- PR #1 was merged with GitHub CLI.
+- PR #1 merge commit on `main`: `35b5b541a708f48a977fa0949282759a43dbe212`.
+- Poster work branch: `work/poster-local-fallback-baseline`.
+- Poster branch checkpoint: `35b5b541a708f48a977fa0949282759a43dbe212`.
+- Pre-poster local residual work was preserved in `stash@{0}`: `preserve residual before poster local fallback branch 2026-05-17`.
+- No poster branch push was performed.
+- No generated PNG, `package.json`, `package-lock.json`, real COS key, or real image API integration was submitted.
+
+### Poster/COS Decision
+
+This milestone intentionally implements only a local text-card fallback:
+
+- No real image generation call.
+- No real COS upload.
+- No generated static poster image committed.
+- No package dependency churn.
+- No orchestrator runtime change.
+
+The poster payload is a structured text card:
+
+```json
+{
+  "poster": {
+    "status": "mocked",
+    "type": "text_card",
+    "title": "Citywalk，轻松一点",
+    "subtitle": "Citywalk / 看展 / 咖啡散步",
+    "copy": "Nira 给你们留了一个不赶时间的开场...",
+    "style": "black_white_minimal",
+    "tags": ["Citywalk", "看展"]
+  },
+  "poster_copy": "..."
+}
+```
+
+### Commits Created
+
+- `10dad8c7029a8c8232c663d4ba4a7266cf8238d0` - `feat: add poster local fallback baseline`
+  - `backend/app/agents/poster_agent.py`
+  - `backend/app/routers/match.py`
+  - `backend/app/routers/schedule.py`
+  - `backend/app/schemas/match.py`
+  - `backend/app/services/match_service.py`
+- `8fb09ad410cd28964ec443738993d93fc05d5fea` - `feat: connect match poster card display`
+  - `frontend/miniprogram/pages/match/match.js`
+  - `frontend/miniprogram/pages/match/match.wxml`
+  - `frontend/miniprogram/pages/match/match.wxss`
+  - `frontend/miniprogram/pages/schedule/schedule.js`
+  - `frontend/miniprogram/pages/schedule/schedule.wxml`
+  - `frontend/miniprogram/pages/schedule/schedule.wxss`
+
+### Verification Results
+
+Backend:
+
+```bash
+cd backend
+.venv\Scripts\python.exe -m compileall app
+curl http://localhost:8000/health
+```
+
+Result: passed. `/health` returned `{"status":"ok","app":"Nira","env":"development"}`.
+
+Frontend:
+
+```bash
+node --check frontend\miniprogram\app.js
+node --check frontend\miniprogram\utils\api.js
+node --check frontend\miniprogram\pages\match\match.js
+node --check frontend\miniprogram\pages\schedule\schedule.js
+node --check frontend\miniprogram\pages\group\group.js
+```
+
+Result: passed.
+
+API smoke:
+
+- `POST /api/v1/schedule/arrange-simple`: passed, returned `status=planned` and `poster.status=mocked`.
+- `POST /api/v1/schedule/confirm`: passed, returned `status=group_created`.
+- `GET /api/v1/match/group/{group_id}`: passed, returned `status=group_created`.
+
+### Remaining Notes
+
+- PowerShell console rendering can garble Chinese response text, but the backend response structure is valid and the Mini Program uses the API fields directly.
+- Existing larger poster/COS residual code remains preserved in `stash@{0}` and should not be applied wholesale.
+- The next safe step is to push `work/poster-local-fallback-baseline` and open a dedicated poster fallback PR after one manual Mini Program visual pass.
+
+### Rollback
+
+Rollback this poster branch to its start:
+
+```bash
+git reset --hard 35b5b541a708f48a977fa0949282759a43dbe212
+```
+
+Revert an individual commit:
+
+```bash
+git revert <commit_hash>
+```
+
+Restore preserved pre-poster residual work only if needed:
+
+```bash
+git stash apply stash@{0}
+```
+
 ## 2026-05-17 PR Review And Poster/COS Preparation
 
 ### Git Safety

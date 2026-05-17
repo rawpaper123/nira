@@ -7,6 +7,7 @@ Page({
         loadError: false,
         errorMsg: '',
         plan: null,
+        poster: null,
         posterCopy: '',
         groupWelcome: '',
         matchId: '',
@@ -75,6 +76,7 @@ Page({
             const ap = activityPlan.activity_plan;
             const result = {
                 plan: ap.plan || {},
+                poster: ap.poster || null,
                 poster_copy: ap.poster_copy || '',
                 group_welcome: ap.group_welcome || '',
             };
@@ -104,11 +106,28 @@ Page({
         this.setData({
             loading: false,
             plan,
+            poster: this.normalizePoster(result),
             posterCopy: result.poster_copy || '',
             groupWelcome: result.group_welcome || result.chat_group_qrcode || '',
             status: result.status || plan.status || 'planned',
             activityId: result.activity_id || result.plan_id || '',
         });
+    },
+
+    normalizePoster(result) {
+        if (result && result.poster && result.poster.copy) return result.poster;
+        if (result && result.poster_copy) {
+            return {
+                status: 'mocked',
+                type: 'text_card',
+                title: '这次见面适合轻松一点',
+                subtitle: result.title || (result.plan && result.plan.title) || '低压力活动安排',
+                copy: result.poster_copy,
+                style: 'black_white_minimal',
+                tags: [],
+            };
+        }
+        return null;
     },
 
     normalizePlan(plan) {
@@ -156,6 +175,7 @@ Page({
         this.setData({ confirming: true });
         const planData = {
             plan: this.data.plan,
+            poster: this.data.poster,
             poster_copy: this.data.posterCopy,
             group_welcome: this.data.groupWelcome,
             match_id: this.data.matchId,
