@@ -1,3 +1,188 @@
+## 2026-05-17 PR Review And Poster/COS Preparation
+
+### Git Safety
+
+- Work branch: `work/push-notification-baseline`
+- Checkpoint commit before this run: `517c86b3069ad8f2dda5ee42ee037ebd98c9f6d9`
+- No push was performed.
+- Staged area was empty at start and checked before commit.
+- Review base: `main...HEAD` because local `main` exists at `27c95589941f8e75d2450271ca058bee3a3fe824`.
+
+### PR Pre-Review Result
+
+The current committed branch is suitable for PR review.
+
+Checked:
+
+- `git diff main...HEAD --stat`
+- `git diff main...HEAD --name-only`
+- secret scan over committed `HEAD`
+
+Findings:
+
+- No real secret/key/token found in committed files.
+- No `package.json` or `package-lock.json` committed in the PR range.
+- No `CLAUDE.md` or `NIRA_PROJECT_CONTEXT.md` committed in the PR range.
+- No `backend/app/static/posters/*`, `poster_agent.py`, `poster_image_service.py`, or `cos_upload.py` committed.
+- Submitted miniprogram images are only tiny tabBar/profile-tab icons.
+- LLM provider commit is limited to config/env/requirements plus the shared provider adapter, not broad agent behavior.
+- Push commits do not include poster/COS.
+
+### Poster/COS Review Result
+
+Poster/COS was not advanced to a code commit in this run.
+
+Classification:
+
+- Poster backend logic:
+  - `backend/app/agents/poster_agent.py` is untracked and generates poster text via LLM.
+  - It has no independent endpoint and would currently be used only through the modified orchestrator.
+- COS/local storage fallback:
+  - `backend/app/utils/cos_upload.py` is untracked and can fallback to local static files after it receives image bytes.
+  - It does not itself create a no-provider placeholder.
+- Poster image generation:
+  - `backend/app/services/poster_image_service.py` is untracked and tries OpenAI image generation first, then DashScope/Wanx.
+  - Without provider keys it returns `None`; this is not a complete local poster image fallback.
+- Miniprogram poster display:
+  - Poster display is mixed into `frontend/miniprogram/pages/chat/*` and `components/chat-bubble/*`, not a clean match-page-only feature.
+- Static/generated assets:
+  - `backend/app/static/posters/*.png` contains generated files around 1.3-1.5MB each.
+  - These were treated as generated artifacts and were not committed.
+- Package dependencies:
+  - `package.json` and `package-lock.json` contain broad native image dependency churn (`canvas`, `sharp`, and transitive dependencies).
+  - These are not safe to include without a dedicated dependency review.
+- Mixed hunk risk:
+  - `backend/app/agents/orchestrator.py` wires poster nodes directly into the match orchestration.
+  - This would change match runtime behavior and could call real image/LLM providers unless further guarded.
+
+Decision: skip poster/COS code commit for now. A safe baseline should first add a no-provider local/mock poster path, avoid static generated PNG commits, and keep orchestrator integration behind a verified development fallback.
+
+### LLM/Agent Remaining Diff Review
+
+Remaining agent changes were reviewed but not submitted.
+
+Classification:
+
+- Profile agent behavior:
+  - Adds preferred name/style/gender/type extraction and photo-related fields.
+  - This overlaps with existing dynamic `/profile/chat` baseline and needs separate behavioral tests.
+- Compatibility scoring behavior:
+  - Rewrites prompt tone and adds score calibration logic.
+  - Contains an unused `math` import and should get focused tests before commit.
+- Simulation behavior:
+  - Rewrites simulation prompt to be much more colloquial and changes parsing resilience.
+  - Needs output-quality smoke tests before being merged.
+- Scheduler behavior:
+  - Rewrites schedule prompt and poster/group copy style.
+  - Safe only as an agent-quality milestone, not poster/COS.
+- Orchestrator behavior:
+  - Adds poster and poster-image nodes into the graph.
+  - Not safe until poster local fallback is proven.
+- Test endpoints/scripts:
+  - Add poster fields to test router and test script output.
+  - Should be submitted only with a verified poster/orchestrator baseline.
+- Match schema/router leftovers:
+  - `backend/app/schemas/match.py` changes `Field(default_factory=list)` to `[]` and removes `AcceptMatchRequest` / `RejectMatchRequest`.
+  - This is a regression risk and should not be committed as-is.
+
+### Verification Results
+
+Backend:
+
+```bash
+cd backend
+.venv\Scripts\python.exe -m compileall app
+curl http://localhost:8000/health
+```
+
+Result: passed. `/health` returned:
+
+```json
+{"status":"ok","app":"Nira","env":"development"}
+```
+
+Frontend:
+
+```bash
+node --check frontend\miniprogram\app.js
+node --check frontend\miniprogram\utils\api.js
+node --check frontend\miniprogram\pages\chat\chat.js
+node --check frontend\miniprogram\pages\index\index.js
+node --check frontend\miniprogram\pages\match\match.js
+node --check frontend\miniprogram\pages\schedule\schedule.js
+node --check frontend\miniprogram\pages\group\group.js
+node --check frontend\miniprogram\pages\me\me.js
+```
+
+Result: passed.
+
+API smoke:
+
+- `GET /api/v1/push/subscribers`: passed, returned one local JSON fallback subscriber.
+- `POST /api/v1/push/test-match-result` with empty openid: passed, returned `status: mocked`.
+
+### Still Uncommitted
+
+- Poster/COS/static generated files:
+  - `backend/app/agents/poster_agent.py`
+  - `backend/app/services/poster_image_service.py`
+  - `backend/app/utils/cos_upload.py`
+  - `backend/app/static/posters/*.png`
+- LLM/agent behavior:
+  - `backend/app/agents/compatibility_agent.py`
+  - `backend/app/agents/orchestrator.py`
+  - `backend/app/agents/profile_agent.py`
+  - `backend/app/agents/scheduler_agent.py`
+  - `backend/app/agents/simulation_agent.py`
+  - `backend/app/routers/test.py`
+  - `backend/app/test_orchestrator.py`
+  - `backend/app/schemas/match.py`
+  - `backend/app/routers/match.py`
+- Mixed frontend residue:
+  - `frontend/miniprogram/app.js`
+  - `frontend/miniprogram/app.wxss`
+  - `frontend/miniprogram/components/chat-bubble/*`
+  - `frontend/miniprogram/pages/chat/*`
+  - `frontend/miniprogram/pages/index/*`
+  - `frontend/miniprogram/pages/match/match.js`
+  - `frontend/miniprogram/utils/api.js`
+- Package/local:
+  - `package.json`
+  - `package-lock.json`
+  - `backend/app/data/`
+  - `CLAUDE.md`
+  - `NIRA_PROJECT_CONTEXT.md`
+
+### Rollback
+
+Rollback this run:
+
+```bash
+git reset --hard 517c86b3069ad8f2dda5ee42ee037ebd98c9f6d9
+```
+
+Revert a single commit:
+
+```bash
+git revert <commit_hash>
+```
+
+Only unstage or discard a specific file:
+
+```bash
+git restore --staged <file>
+git restore <file>
+```
+
+Do not run broad cleanup on untracked generated files until reviewed.
+
+### Next Suggestions
+
+1. Open a PR for the current branch before adding poster/COS. The committed branch is already coherent: dynamic onboarding, match/schedule/group, push baseline, provider config, and profile tab.
+2. For poster/COS, first design a development-only poster text/card fallback that never calls image APIs when no explicit provider key is configured.
+3. Keep static poster PNGs out of Git unless a tiny intentional placeholder is added and documented.
+4. Split agent-quality changes into a later milestone, and restore `Field(default_factory=list)` plus accept/reject schema before any match schema commit.
+
 ## 2026-05-17 Multi-Milestone Cleanup
 
 ### Git Safety
