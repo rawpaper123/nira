@@ -41,7 +41,6 @@ class MatchResult(BaseModel):
     score: float
     simulation: list[SimulationScene]
     compatibility: CompatibilityDetail
-    poster_url: str | None = None
     matched_user_name: str | None = None
     compatibility_score: int | None = None
     reasons: list[str] = Field(default_factory=list)

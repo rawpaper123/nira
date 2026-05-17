@@ -47,15 +47,25 @@ Page({
     },
 
     async restoreRemoteProfile() {
-        if (!app.isLoggedIn() || app.isProfileComplete()) return;
+        if (!app.isLoggedIn()) return;
 
         this.setData({ isRestoringProfile: true });
         try {
             const profile = await api.getProfile(app.getUserId());
+            if (!profile || profile.profile_completed === false || profile.status === 'not_found') {
+                app.globalData.profileCompleted = false;
+                wx.setStorageSync('profileCompleted', false);
+                if (profile && profile.status !== 'not_found') {
+                    app.globalData.profile = profile;
+                    wx.setStorageSync('profile', profile);
+                }
+                this.refreshState();
+                return;
+            }
             app.setProfile(profile);
             this.refreshState();
         } catch (err) {
-            // 404 表示还没完成 onboarding，保持首页未完成状态即可。
+            // Keep the local incomplete state if onboarding is not done yet.
         } finally {
             this.setData({ isRestoringProfile: false });
         }

@@ -10,13 +10,16 @@ App({
         userInfo: null,
         profile: null,
         currentMatch: null,
+        matchResult: null,
         activityPlan: null,
+        groupInfo: null,
         userId: null,
         openid: null,
         phone: null,
         token: null,
         profileCompleted: false,
         joinedQueue: false,
+        templateId: '',
     },
 
     ensureUserId() {
@@ -81,6 +84,13 @@ App({
             return;
         }
 
+        if ((this.globalData.apiBase || '').indexOf('localhost') !== -1) {
+            const devOpenid = 'dev_local_openid';
+            this.globalData.openid = devOpenid;
+            wx.setStorageSync('nira_openid', devOpenid);
+            return;
+        }
+
         const api = require('./utils/api');
         wx.login({
             success: (res) => {
@@ -88,6 +98,7 @@ App({
                     api.login(res.code).then((data) => {
                         this.globalData.openid = data.openid;
                         wx.setStorageSync('nira_openid', data.openid);
+                        // 如果后端返回了更稳定的 user_id，也更新
                         if (data.user_id) {
                             this.globalData.userId = data.user_id;
                             wx.setStorageSync('nira_user_id', data.user_id);
@@ -130,13 +141,21 @@ App({
         this.globalData.profile = null;
         this.globalData.profileCompleted = false;
         this.globalData.currentMatch = null;
+        this.globalData.matchResult = null;
+        this.globalData.activityPlan = null;
+        this.globalData.groupInfo = null;
         this.globalData.joinedQueue = false;
         wx.removeStorageSync('profile');
         wx.removeStorageSync('profileCompleted');
         wx.removeStorageSync('currentMatch');
+        wx.removeStorageSync('matchResult');
+        wx.removeStorageSync('activityPlan');
+        wx.removeStorageSync('groupInfo');
         wx.removeStorageSync('joinedQueue');
         wx.removeStorageSync('nira_chat_messages');
         wx.removeStorageSync('nira_chat_history');
+        wx.removeStorageSync('nira_profile_conversation_id');
+        wx.removeStorageSync('profilePatch');
     },
 
     // ---- User Info ----
@@ -157,14 +176,24 @@ App({
 
     setCurrentMatch(match) {
         this.globalData.currentMatch = match;
+        this.globalData.matchResult = match;
         wx.setStorageSync('currentMatch', match);
+        wx.setStorageSync('matchResult', match);
     },
 
     getCurrentMatch() {
         if (!this.globalData.currentMatch) {
-            this.globalData.currentMatch = wx.getStorageSync('currentMatch') || null;
+            this.globalData.currentMatch = wx.getStorageSync('currentMatch') || wx.getStorageSync('matchResult') || null;
         }
         return this.globalData.currentMatch;
+    },
+
+    setMatchResult(match) {
+        this.setCurrentMatch(match);
+    },
+
+    getMatchResult() {
+        return this.getCurrentMatch();
     },
 
     // ---- Queue ----
@@ -198,6 +227,90 @@ App({
             this.globalData.activityPlan = wx.getStorageSync('activityPlan') || null;
         }
         return this.globalData.activityPlan;
+    },
+
+    // ---- Group ----
+
+    setGroupInfo(info) {
+        const normalized = this.normalizeGroupInfo(info);
+        this.globalData.groupInfo = normalized;
+        wx.setStorageSync('groupInfo', normalized);
+    },
+
+    getGroupInfo() {
+        if (!this.globalData.groupInfo) {
+            this.globalData.groupInfo = wx.getStorageSync('groupInfo') || null;
+        }
+        if (this.globalData.groupInfo) {
+            this.globalData.groupInfo = this.normalizeGroupInfo(this.globalData.groupInfo);
+            wx.setStorageSync('groupInfo', this.globalData.groupInfo);
+        }
+        return this.globalData.groupInfo;
+    },
+
+    normalizeGroupInfo(info) {
+        if (!info) return null;
+        return {
+            ...info,
+            group_id: info.group_id || info.groupId || '',
+            match_id: info.match_id || info.matchId || '',
+            activity_id: info.activity_id || info.activityId || info.plan_id || info.planId || '',
+            plan_id: info.plan_id || info.planId || info.activity_id || info.activityId || '',
+        };
+    },
+
+    // ---- Match History ----
+
+    addMatchHistory(entry) {
+        const history = wx.getStorageSync('matchHistory') || [];
+        history.unshift({
+            id: Date.now(),
+            date: new Date().toLocaleDateString('zh-CN'),
+            activity: entry.activity || '未知活动',
+            score: entry.score || 0,
+            status: entry.status || 'accepted',
+            statusText: { accepted: '已接受', rejected: '已拒绝', completed: '已完成' }[entry.status] || '已接受',
+        });
+        // 最多保留 20 条
+        if (history.length > 20) history.length = 20;
+        wx.setStorageSync('matchHistory', history);
+    },
+
+    getMatchHistory() {
+        return wx.getStorageSync('matchHistory') || [];
+    },
+
+    // ---- Push Notification ----
+
+    sendSubscribeRequest(templateId) {
+        const tid = templateId || this.globalData.templateId;
+        if (!tid) {
+            console.warn('templateId is not configured; skip subscribe request');
+            return Promise.resolve(false);
+        }
+
+        return new Promise((resolve) => {
+            wx.requestSubscribeMessage({
+                tmplIds: [tid],
+                success(res) {
+                    resolve(res[tid] === 'accept');
+                },
+                fail(err) {
+                    console.warn('requestSubscribeMessage failed:', err);
+                    resolve(false);
+                },
+            });
+        });
+    },
+
+    handlePushEntry(query) {
+        const page = (query && query.page) || 'match';
+        const matchId = (query && (query.match_id || query.matchId)) || '';
+        if (page === 'chat') {
+            wx.reLaunch({ url: '/pages/chat/chat?from=push&match_id=' + matchId });
+            return;
+        }
+        wx.reLaunch({ url: '/pages/match/match?from=push&match_id=' + matchId });
     },
 
     generateUUID() {

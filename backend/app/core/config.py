@@ -13,11 +13,17 @@ class Settings(BaseSettings):
 
     dashscope_api_key: str = ""
     qwen_model_name: str = "qwen-max"
-
+    llm_provider: str = "auto"  # auto | deepseek | openai | qwen
+    deepseek_api_key: str = ""
+    deepseek_base_url: str = "https://api.deepseek.com"
+    deepseek_model: str = "deepseek-v4-flash"
+    openai_model: str = "gpt-4.1-nano"
     wx_appid: str = ""
     wx_secret: str = ""
+    wx_template_id_match: str = ""
     genesis_invite_code: str = "NIRA2026"  # 创始邀请码（User < 1000 时可用）
 
+    openai_api_key: str = ""
     cos_secret_id: str = ""
     cos_secret_key: str = ""
     cos_bucket: str = ""

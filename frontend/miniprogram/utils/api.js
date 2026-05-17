@@ -29,6 +29,7 @@ function request(options) {
             method: options.method || 'GET',
             data: options.data || {},
             header: { ...header, ...options.header },
+            timeout: options.timeout || 10000,
             success(res) {
                 if (res.statusCode >= 200 && res.statusCode < 300) {
                     resolve(res.data);
@@ -78,6 +79,23 @@ function getProfile(userId) {
 }
 
 /**
+ * POST /api/v1/profile/chat
+ * Dynamic onboarding chat: backend returns reply + profile_patch + completion.
+ */
+function profileChat(userId, message, conversationId) {
+    return request({
+        url: '/api/v1/profile/chat',
+        method: 'POST',
+        loading: false,
+        data: {
+            user_id: userId,
+            message: message,
+            conversation_id: conversationId || '',
+        },
+    });
+}
+
+/**
  * POST /api/v1/match/join-queue
  * 加入本周匹配队列
  */
@@ -97,8 +115,23 @@ function weeklyMatch(userId, city) {
     return request({
         url: '/api/v1/match/weekly',
         method: 'POST',
-        loadingText: 'AI 正在寻找最佳搭子...',
+        loadingText: '正在看看这周有没有合适搭子...',
         data: { user_id: userId, city: city || '上海' },
+    });
+}
+
+const runWeeklyMatch = weeklyMatch;
+const triggerWeeklyMatch = weeklyMatch;
+
+/**
+ * GET /api/v1/match/result/{userId}
+ */
+function getMatchResult(userId) {
+    return request({
+        url: `/api/v1/match/result/${userId}`,
+        method: 'GET',
+        loading: false,
+        silent: true,
     });
 }
 
@@ -111,6 +144,34 @@ function arrangeActivity(matchId) {
         method: 'POST',
         loadingText: 'AI 正在策划活动方案...',
         data: { match_id: matchId },
+    });
+}
+
+/**
+ * POST /api/v1/schedule/arrange-simple
+ * 轻量版：不需要数据库，直接用 profile + compatibility 生成
+ */
+function arrangeActivitySimple(data) {
+    return request({
+        url: '/api/v1/schedule/arrange-simple',
+        method: 'POST',
+        loadingText: '正在安排活动...',
+        data: data,
+    });
+}
+
+const arrangeSimple = arrangeActivitySimple;
+
+/**
+ * POST /api/v1/schedule/confirm
+ * 确认活动安排并创建本地 mock group
+ */
+function confirmSchedule(data) {
+    return request({
+        url: '/api/v1/schedule/confirm',
+        method: 'POST',
+        loadingText: '确认安排中...',
+        data: data,
     });
 }
 
@@ -139,6 +200,102 @@ function healthCheck() {
         method: 'GET',
         loading: false,
         silent: true,
+    });
+}
+
+/**
+ * POST /api/v1/push/subscribe
+ */
+function subscribeNotification(userId, openid) {
+    return request({
+        url: '/api/v1/push/subscribe',
+        method: 'POST',
+        loading: false,
+        data: { user_id: userId, openid: openid || '' },
+    });
+}
+
+/**
+ * POST /api/v1/push/match-result
+ */
+function sendMatchPush(userId, matchId) {
+    return request({
+        url: '/api/v1/push/match-result',
+        method: 'POST',
+        loading: false,
+        data: { user_id: userId, match_id: matchId },
+    });
+}
+
+/**
+ * POST /api/v1/push/test-match-result
+ */
+function testMatchPush(openid, options) {
+    return request({
+        url: '/api/v1/push/test-match-result',
+        method: 'POST',
+        loadingText: 'Sending test push...',
+        data: {
+            openid: openid || '',
+            match_id: (options && options.matchId) || 'test-match-001',
+            score: (options && options.score) || 88,
+            nickname: (options && options.nickname) || 'Nira partner',
+        },
+    });
+}
+/**
+ * POST /api/v1/match/accept
+ * 接受匹配
+ */
+function acceptMatch(matchId, userId, role) {
+    return request({
+        url: '/api/v1/match/accept',
+        method: 'POST',
+        loadingText: '确认中...',
+        data: { match_id: matchId, user_id: userId, role: role || 'a' },
+    });
+}
+
+/**
+ * POST /api/v1/match/reject
+ * 拒绝匹配
+ */
+function rejectMatch(matchId, userId) {
+    return request({
+        url: '/api/v1/match/reject',
+        method: 'POST',
+        loading: false,
+        data: { match_id: matchId, user_id: userId },
+    });
+}
+
+/**
+ * GET /api/v1/match/group/{groupId}
+ * 获取群聊信息
+ */
+function getGroupInfo(groupId) {
+    return request({
+        url: `/api/v1/match/group/${groupId}`,
+        method: 'GET',
+        loading: false,
+        silent: true,
+    });
+}
+
+const getGroup = getGroupInfo;
+const readGroup = getGroupInfo;
+
+/**
+ * POST /api/v1/match/group/send
+ * 发送群聊消息
+ */
+function sendGroupMessage(groupId, sender, content) {
+    return request({
+        url: '/api/v1/match/group/send',
+        method: 'POST',
+        loading: false,
+        silent: true,
+        data: { group_id: groupId, sender: sender, content: content },
     });
 }
 
@@ -183,16 +340,33 @@ function verifyCodeAndLogin(phone, code, openid, inviteCode) {
         data: data,
     });
 }
+
 module.exports = {
     request,
     login,
     sendVerificationCode,
     verifyCodeAndLogin,
     buildProfile,
+    profileChat,
     getProfile,
     joinQueue,
+    subscribeNotification,
     weeklyMatch,
+    runWeeklyMatch,
+    triggerWeeklyMatch,
+    getMatchResult,
     arrangeActivity,
+    arrangeActivitySimple,
+    arrangeSimple,
+    confirmSchedule,
     testMatch,
     healthCheck,
+    sendMatchPush,
+    testMatchPush,
+    acceptMatch,
+    rejectMatch,
+    getGroupInfo,
+    getGroup,
+    readGroup,
+    sendGroupMessage,
 };
