@@ -20,7 +20,7 @@ export default function ComparisonSection() {
             </p>
             <div className="w-full max-w-sm overflow-hidden rounded-3xl">
               <Image
-                src="/images/howitworks/nira-wechat-notification-v2.png"
+                src="/images/howitworks/nira-wechat-notification-v3.png"
                 alt="Nira - 一条消息安排约会"
                 width={400}
                 height={600}
