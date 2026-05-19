@@ -58,7 +58,7 @@ export default function MobileMenu({
             className="text-base font-medium text-black transition-opacity hover:opacity-70"
             onClick={onClose}
           >
-            Simulation
+            模拟世界
           </a>
           <a
             href="#"

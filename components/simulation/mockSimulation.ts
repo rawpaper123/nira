@@ -11,61 +11,61 @@ import type {
 } from "./simulationTypes";
 
 const PERSONAS: Array<{ type: PersonaType; color: string }> = [
-  { type: "Slow Warmer", color: "#8fb7ff" },
-  { type: "Activity Seeker", color: "#ffb86b" },
-  { type: "City Explorer", color: "#7ed7c1" },
-  { type: "Deep Talker", color: "#b69cff" },
-  { type: "Career Networker", color: "#f7a5ba" },
-  { type: "Niche Hobbyist", color: "#f6d365" },
-  { type: "ACG Circle", color: "#9ad0f5" },
-  { type: "Outdoor Companion", color: "#9ddc8a" },
-  { type: "New-in-Town", color: "#ff9f8f" },
-  { type: "Cautious User", color: "#b5bdc9" },
+  { type: "Slow Warmer / 慢热型", color: "#8fb7ff" },
+  { type: "Activity Seeker / 活动搭子型", color: "#ffb86b" },
+  { type: "City Explorer / 城市探索型", color: "#7ed7c1" },
+  { type: "Deep Talker / 深聊型", color: "#b69cff" },
+  { type: "Career Networker / 职业交流型", color: "#f7a5ba" },
+  { type: "Niche Hobbyist / 小众兴趣型", color: "#f6d365" },
+  { type: "ACG Circle / 二次元圈层", color: "#9ad0f5" },
+  { type: "Outdoor Companion / 户外搭子型", color: "#9ddc8a" },
+  { type: "New-in-Town / 新城市适应型", color: "#ff9f8f" },
+  { type: "Cautious User / 高边界谨慎型", color: "#b5bdc9" },
 ];
 
 const CLUSTER_LABELS = [
-  "Gallery walk",
-  "Campus coffee",
-  "Weekend hike",
-  "City bookstore",
-  "Study session",
-  "Evening run",
-  "Indie film",
-  "Board game table",
+  "看展散步 / Gallery walk",
+  "校园咖啡 / Campus coffee",
+  "周末徒步 / Weekend hike",
+  "城市书店 / City bookstore",
+  "自习搭子 / Study session",
+  "夜跑搭子 / Evening run",
+  "独立电影 / Indie film",
+  "桌游局 / Board game table",
 ];
 
 const EVENT_COPY: Record<SimulationEventType, string[]> = {
   agent_joined: [
-    "A synthetic persona joined the simulation",
-    "New AI-generated profile entered the simulation world",
+    "新的 AI 合成画像进入模拟世界",
+    "一个模拟智能体加入活动匹配推演",
   ],
   link_created: [
-    "{a} is testing a low-pressure introduction with {b}",
-    "{a} found a possible shared activity window with {b}",
+    "{a} 正在与 {b} 试探一次低压力活动连接",
+    "{a} 和 {b} 发现了可能重合的活动时间窗",
   ],
   conversation_started: [
-    "{a} and {b} moved into a simulated context check",
-    "{a} is exploring meeting context with {b}",
+    "{a} 和 {b} 进入模拟场景确认",
+    "{a} 正在和 {b} 探索线下见面语境",
   ],
   compatibility_updated: [
-    "Nira recalculated a synthetic compatibility signal",
-    "A simulated pair score changed after context shifted",
+    "Nira 重新计算了一组模拟匹配信号",
+    "场景变化后，一组模拟活动匹配分数发生更新",
   ],
   link_dropped: [
-    "{a} and {b} drifted apart after a weak fit signal",
-    "A low-confidence synthetic link faded out",
+    "{a} 和 {b} 在低匹配信号后自然降温",
+    "一条低信心模拟连接逐渐淡出",
   ],
   match_candidate_created: [
-    "Nira found a possible activity-based match",
-    "{a} and {b} became a simulated match candidate",
+    "Nira 发现一次基于活动的潜在匹配",
+    "{a} 和 {b} 成为模拟活动候选组合",
   ],
   safety_filtered: [
-    "Safety filter blocked an over-direct match",
-    "Boundary mismatch prevented a synthetic connection",
+    "例行边界检查：一条候选连接进入复核",
+    "系统质检中：一次试探连接等待语境确认",
   ],
   event_cluster_created: [
-    "Synthetic activity scene formed around {cluster}",
-    "AI personas entered a {cluster} scenario",
+    "模拟活动场景正在形成：{cluster}",
+    "AI 合成画像进入 {cluster} 场景",
   ],
 };
 
@@ -89,9 +89,9 @@ function eventMessage(
   cluster?: SimulationCluster,
 ) {
   return pick(EVENT_COPY[type], rng)
-    .replace("{a}", a?.personaType ?? "Synthetic persona")
-    .replace("{b}", b?.personaType ?? "another persona")
-    .replace("{cluster}", cluster?.label ?? "an activity scene");
+    .replace("{a}", a?.personaType ?? "模拟画像")
+    .replace("{b}", b?.personaType ?? "另一个模拟画像")
+    .replace("{cluster}", cluster?.label ?? "一个活动场景");
 }
 
 function addEvent(

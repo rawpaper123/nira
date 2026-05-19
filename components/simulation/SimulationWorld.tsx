@@ -34,15 +34,15 @@ export default function SimulationWorld() {
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="rounded-3xl border border-black/10 bg-white p-4">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Dot</p>
-            <p className="mt-2 text-sm text-neutral-600">Synthetic AI-generated persona</p>
+            <p className="mt-2 text-sm text-neutral-600">AI 生成的合成用户画像</p>
           </div>
           <div className="rounded-3xl border border-black/10 bg-white p-4">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Line</p>
-            <p className="mt-2 text-sm text-neutral-600">Mock interaction or compatibility signal</p>
+            <p className="mt-2 text-sm text-neutral-600">模拟互动或活动匹配信号</p>
           </div>
           <div className="rounded-3xl border border-black/10 bg-white p-4">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Cluster</p>
-            <p className="mt-2 text-sm text-neutral-600">Temporary activity scene in the simulation</p>
+            <p className="mt-2 text-sm text-neutral-600">临时活动场景簇</p>
           </div>
         </div>
       </div>

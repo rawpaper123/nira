@@ -17,14 +17,14 @@ export default function SimulationEventFeed({ events }: SimulationEventFeedProps
       <div className="mb-4 flex items-center justify-between gap-4">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.24em] text-neutral-400">
-            Event feed
+            Simulation Feed
           </p>
           <h2 className="mt-2 text-xl font-black tracking-tight text-black">
-            Recent simulated events
+            模拟事件流
           </h2>
         </div>
         <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
-          Mock stream
+          本地模拟
         </span>
       </div>
 
@@ -43,7 +43,7 @@ export default function SimulationEventFeed({ events }: SimulationEventFeedProps
           ))
         ) : (
           <p className="rounded-2xl bg-neutral-50 p-3 text-sm text-neutral-500">
-            The synthetic world is warming up.
+            模拟世界正在预热中...
           </p>
         )}
       </div>

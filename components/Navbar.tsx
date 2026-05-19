@@ -33,7 +33,7 @@ export default function Navbar({ onJoinClick }: { onJoinClick: () => void }) {
               href="/simulation"
               className="text-sm font-medium text-black transition-opacity hover:opacity-70"
             >
-              Simulation
+              模拟世界
             </a>
             <a
               href="#"

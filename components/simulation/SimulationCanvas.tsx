@@ -152,7 +152,7 @@ export default function SimulationCanvas({ onFrameSummary }: SimulationCanvasPro
     <canvas
       ref={canvasRef}
       className="h-[480px] w-full rounded-[2rem] border border-black/10 bg-slate-50 shadow-[0_24px_80px_rgba(15,23,42,0.08)] lg:h-[680px]"
-      aria-label="Nira synthetic relationship simulation canvas"
+      aria-label="Nira synthetic activity matching simulation canvas"
     />
   );
 }
