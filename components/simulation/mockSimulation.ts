@@ -37,26 +37,26 @@ const CLUSTER_LABELS = [
 const EVENT_COPY: Record<SimulationEventType, string[]> = {
   agent_joined: [
     "A synthetic persona joined the simulation",
-    "New AI-generated profile entered the world",
+    "New AI-generated profile entered the simulation world",
   ],
   link_created: [
-    "{a} started probing {b}",
-    "{a} found a possible activity overlap with {b}",
+    "{a} is testing a low-pressure introduction with {b}",
+    "{a} found a possible shared activity window with {b}",
   ],
   conversation_started: [
-    "{a} and {b} moved into a simulated conversation",
-    "{a} tested meeting context with {b}",
+    "{a} and {b} moved into a simulated context check",
+    "{a} is exploring meeting context with {b}",
   ],
   compatibility_updated: [
-    "Compatibility score shifted after a context update",
-    "Nira recalculated a synthetic pair score",
+    "Nira recalculated a synthetic compatibility signal",
+    "A simulated pair score changed after context shifted",
   ],
   link_dropped: [
-    "{a} and {b} drifted apart after a weak signal",
-    "A low-confidence simulated link faded out",
+    "{a} and {b} drifted apart after a weak fit signal",
+    "A low-confidence synthetic link faded out",
   ],
   match_candidate_created: [
-    "High-confidence activity match detected",
+    "Nira found a possible activity-based match",
     "{a} and {b} became a simulated match candidate",
   ],
   safety_filtered: [
@@ -64,8 +64,8 @@ const EVENT_COPY: Record<SimulationEventType, string[]> = {
     "Boundary mismatch prevented a synthetic connection",
   ],
   event_cluster_created: [
-    "Event cluster formed around {cluster}",
-    "Synthetic activity scene opened: {cluster}",
+    "Synthetic activity scene formed around {cluster}",
+    "AI personas entered a {cluster} scenario",
   ],
 };
 

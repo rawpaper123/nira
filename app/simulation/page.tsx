@@ -30,7 +30,7 @@ export default function SimulationPage() {
             </p>
             <p className="mt-4 max-w-3xl text-base leading-8 text-neutral-600 sm:text-lg">
               这是 Nira 的 AI 关系撮合模拟世界。每一个 dot 都代表一个 AI 生成的用户画像，
-              用于展示系统如何试探、连接、过滤和推动真实线下见面。
+              用于展示系统如何试探、连接、过滤和推动线下见面；不代表真实用户或真实匹配队列。
             </p>
           </div>
 
@@ -42,6 +42,9 @@ export default function SimulationPage() {
               This public demo uses synthetic personas and local mock events. It does not connect to real users,
               real queues, production matching, private profiles, location, WeChat, or chat data.
             </p>
+            <div className="mt-4 rounded-2xl bg-neutral-50 px-4 py-3 text-sm font-semibold text-black">
+              公开展示的是模拟推演，不是生产系统里的真实用户动态。
+            </div>
           </div>
         </header>
 
