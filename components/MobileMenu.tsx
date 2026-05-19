@@ -54,6 +54,13 @@ export default function MobileMenu({
 
         <div className="flex flex-col gap-4 p-6">
           <a
+            href="/simulation"
+            className="text-base font-medium text-black transition-opacity hover:opacity-70"
+            onClick={onClose}
+          >
+            模拟世界
+          </a>
+          <a
             href="#"
             className="text-base font-medium text-black transition-opacity hover:opacity-70"
           >

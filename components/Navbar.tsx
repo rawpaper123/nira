@@ -30,6 +30,12 @@ export default function Navbar({ onJoinClick }: { onJoinClick: () => void }) {
 
           <div className="hidden items-center gap-6 md:flex">
             <a
+              href="/simulation"
+              className="text-sm font-medium text-black transition-opacity hover:opacity-70"
+            >
+              模拟世界
+            </a>
+            <a
               href="#"
               className="text-sm font-medium text-black transition-opacity hover:opacity-70"
             >
